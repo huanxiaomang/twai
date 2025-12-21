@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRoute } from "vue-router";
-import { Settings2 } from "lucide-vue-next";
 
 import type { Feed } from "@/types";
 defineProps<{
@@ -30,22 +29,20 @@ const isActive = (path: string) => {
       订阅源
     </SidebarGroupLabel>
     <SidebarMenu>
-      <SidebarMenuItem v-for="item in feeds" :key="item.id">
+      <SidebarMenuItem v-for="item in feeds" :key="item.feed_id">
         <SidebarMenuButton
           as-child
-          :is-active="isActive(`/feed/${item.id}`)"
+          :is-active="isActive(`/feed/${item.feed_id}`)"
           :tooltip="item.name"
           class="transition-all duration-200 min-h-9"
         >
-          <router-link :to="`/feed/${item.id}`" class="flex items-center gap-3">
+          <router-link
+            :to="`/feed/${item.feed_id}`"
+            class="flex items-center gap-3"
+          >
             <Avatar
               class="h-6 w-6 shrink-0 transition-all duration-300"
-              :class="[
-                state === 'collapsed' ? 'ml-[-3.5px]' : '',
-                state === 'collapsed' && isActive(`/feed/${item.id}`)
-                  ? 'ring-2 ring-sidebar-primary ring-offset-2 ring-offset-background scale-95'
-                  : '',
-              ]"
+              :class="[state === 'collapsed' ? 'ml-[-3.5px]' : '']"
             >
               <AvatarImage :src="item.avatar" />
               <AvatarFallback class="text-[10px]">
@@ -53,35 +50,6 @@ const isActive = (path: string) => {
               </AvatarFallback>
             </Avatar>
             <span class="truncate font-medium">{{ item.name }}</span>
-          </router-link>
-        </SidebarMenuButton>
-      </SidebarMenuItem>
-    </SidebarMenu>
-
-    <SidebarGroupLabel
-      class="text-xs font-semibold text-muted-foreground/70 mt-4"
-    >
-      系统
-    </SidebarGroupLabel>
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <SidebarMenuButton
-          as-child
-          :is-active="isActive('/settings')"
-          tooltip="Settings"
-          class="transition-all duration-200 min-h-9"
-        >
-          <router-link to="/settings" class="flex items-center gap-3">
-            <Settings2
-              class="h-6 w-6 shrink-0 transition-all duration-300"
-              :class="[
-                state === 'collapsed' ? 'ml-[-3.5px]' : '',
-                state === 'collapsed' && isActive('/settings')
-                  ? 'text-sidebar-primary scale-110'
-                  : '',
-              ]"
-            />
-            <span class="truncate font-medium">Settings</span>
           </router-link>
         </SidebarMenuButton>
       </SidebarMenuItem>

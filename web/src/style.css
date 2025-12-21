@@ -120,3 +120,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+@utility text-filter {
+  @apply text-[11px] leading-[11px];
+}

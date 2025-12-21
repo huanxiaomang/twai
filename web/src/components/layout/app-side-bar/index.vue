@@ -4,6 +4,7 @@ import type { SidebarProps } from "@/components/ui/sidebar";
 import { GalleryVerticalEnd } from "lucide-vue-next";
 import NavFeeds from "@/components/layout/app-side-bar/NavFeeds.vue";
 import NavUser from "@/components/layout/app-side-bar/NavUser.vue";
+import NavOther from "@/components/layout/app-side-bar/NavOther.vue";
 
 import { useUserStore } from "@/stores/user";
 import {
@@ -16,7 +17,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import type { Feed } from "@/types";
+import { onMounted } from "vue";
 
 const props = withDefaults(defineProps<SidebarProps>(), {
   collapsible: "icon",
@@ -24,27 +25,9 @@ const props = withDefaults(defineProps<SidebarProps>(), {
 
 const userStore = useUserStore();
 
-// Mock feeds for now, could be moved to store later
-const feeds: Feed[] = [
-  {
-    name: "feed1",
-    id: "feed1",
-    avatar: "https://www.shadcn-vue.com/avatars/shadcn.jpg",
-    url: "xxx",
-  },
-  {
-    name: "feed2",
-    id: "feed2",
-    avatar: "https://www.shadcn-vue.com/avatars/shadcn.jpg",
-    url: "xxx",
-  },
-  {
-    name: "feed3",
-    id: "feed3",
-    url: "xxx",
-    avatar: "https://www.shadcn-vue.com/avatars/shadcn.jpg",
-  },
-];
+onMounted(() => {
+  userStore.fetchAllFeedsInfo();
+});
 </script>
 
 <template>
@@ -69,7 +52,8 @@ const feeds: Feed[] = [
       </SidebarMenu>
     </SidebarHeader>
     <SidebarContent>
-      <NavFeeds :feeds="feeds" />
+      <NavFeeds :feeds="userStore.feeds" />
+      <NavOther />
     </SidebarContent>
     <SidebarFooter>
       <NavUser :user="userStore.user" />

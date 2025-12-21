@@ -28,7 +28,7 @@ const addFeed = () => {
 
   store.subscribe_feed_url.push(newFeedUrl.value);
   newFeedUrl.value = "";
-  store.save();
+  store.saveConfig();
   toast.success("订阅源添加成功");
 };
 
@@ -40,7 +40,7 @@ const removeFeed = (index: number) => {
       label: "确认删除",
       onClick: () => {
         store.subscribe_feed_url.splice(index, 1);
-        store.save();
+        store.saveConfig();
         toast.success("已成功删除订阅源");
       },
     },
@@ -50,7 +50,7 @@ const removeFeed = (index: number) => {
 // Automatic saving for all state changes
 store.$subscribe(
   () => {
-    store.save();
+    store.saveConfig();
   },
   { deep: true }
 );
@@ -152,6 +152,15 @@ store.$subscribe(
             <div class="flex items-center gap-1.5">
               <Rss class="w-4 h-4 text-muted-foreground" />
               <span class="text-lg font-bold tracking-tight">订阅源</span>
+            </div>
+            <div>
+              <a
+                href="https://baidu.com"
+                target="_blank"
+                class="text-xs text-primary underline flex items-center gap-1"
+              >
+                如何创建自己的订阅源？
+              </a>
             </div>
             <FieldGroup class="mt-1">
               <div class="flex gap-2">

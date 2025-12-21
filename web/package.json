@@ -9,9 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@internationalized/date": "^3.10.1",
     "@vueuse/core": "^14.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "idb": "^8.0.3",
     "lucide-vue-next": "^0.562.0",
     "paneforge": "^1.0.2",

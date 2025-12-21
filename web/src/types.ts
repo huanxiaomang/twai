@@ -1,31 +1,42 @@
 export interface Feed {
     name: string;
-    id: string;
-    url: string;
+    feed_id: string;
+    feed_url: string;
     avatar: string;
+    ai_bots?: AIBotItem[];
+}
+
+export interface FeedAIResponse {
+    feed_ai_analysis: Record<string, string>; // Overview, summary, etc.
+    feed_item_ai_bots_content?: Record<string, Record<string, string>>; // tw_id -> bot_id -> content
 }
 
 export interface FeedResponse {
     feed: Feed;
-    version: string;
     list: FeedItemContent[];
+    tags_info?: TagInfo[];
+    feed_ai_analysis: Record<string, string>; // Overview, summary, etc.
+    feed_item_ai_bots_content?: Record<string, Record<string, string>>; // tw_id -> bot_id -> content
 }
 
 export interface FeedItemContent {
-    id: string;
+    tw_id: string;
     url: string;
     title?: string;
     content_text?: string;
-    content_html?: string;
-    summary?: string;
     image?: string;
     date_published: string;
     authors?: Author[];
     attachments?: Attachment[];
     tags?: string[];
-    read?: boolean;
-    ai_analysis?: AIAnalysisItem[];
-    originText?: string;
+    is_translated: boolean;
+    rawText?: string;
+}
+
+export interface TagInfo {
+    tag_id: string;
+    tag_name: string;
+    tag_count: number;
 }
 
 export interface Author {
@@ -40,28 +51,32 @@ export interface Attachment {
     title?: string;
 }
 
-export type AIAnalysisItem = {
-    id: string;
+export type AIBotItem = {
+    bot_id: string;
     name: string;
     avatar: string;
-    description: string;
+    description?: string;
     prompt: string;
-    content: string | null;
 };
 
 export interface UserState {
+    curr_feed: Feed | null;
+    curr_tweet_id: string | null;
+    curr_tags: string[];
+    date_range: DateRange;
+}
+
+export interface UserConfig {
     user: UserInfo;
     ai_config: UserAIConfig;
     subscribe_feed_url: string[];
-    curr_feed: Feed | null;
-    curr_version: string | null;
-    curr_tweet_id: string | null;
-    curr_tags: string[];
-    starred_items: FeedItemContent[];
-    category: TweetCategory;
 }
 
-export type TweetCategory = "none" | "author";
+export interface UserStarredItem {
+    starred_items: FeedItemContent[];
+}
+
+export type DateRange = "all" | "starred" | "last_day" | "last_week" | (string & {});
 
 export interface UserInfo {
     name: string;
