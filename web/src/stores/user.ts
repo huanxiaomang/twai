@@ -10,6 +10,7 @@ import type {
     UserAIConfig
 } from '@/types';
 import { storage } from '../../services/ls';
+import { fetchFeedInfo, fetchFeedItem, fetchFeedsAIItem } from '../../services/mock';
 
 const STATE_KEY = 'twai_user_state';
 const CONFIG_KEY = 'twai_user_config';
@@ -34,6 +35,7 @@ const initialState: UserState = {
     curr_tweet_id: null,
     curr_tags: [],
     date_range: "all",
+    ai_panel_width: 25,
 };
 
 const initialStarred: UserStarredItem = {
@@ -52,6 +54,7 @@ export const useUserStore = defineStore('user', {
             curr_tweet_id: savedState?.curr_tweet_id ?? initialState.curr_tweet_id,
             curr_tags: savedState?.curr_tags ?? initialState.curr_tags,
             date_range: savedState?.date_range ?? initialState.date_range,
+            ai_panel_width: savedState?.ai_panel_width ?? initialState.ai_panel_width,
 
             // UserConfig
             user: savedConfig?.user ?? initialConfig.user,
@@ -74,8 +77,7 @@ export const useUserStore = defineStore('user', {
         async fetchAllFeedsInfo() {
             this.isLoadingFeeds = true;
             try {
-                const { fetchFeedInfo } = await import('../../services/mock');
-                const feedPromises = this.subscribe_feed_url.map(url => fetchFeedInfo(url));
+                const feedPromises = this.subscribe_feed_url.map((url: string) => fetchFeedInfo(url));
                 this.feeds = await Promise.all(feedPromises);
             } catch (error) {
                 console.error('Failed to fetch feeds info:', error);
@@ -87,7 +89,6 @@ export const useUserStore = defineStore('user', {
         async fetchFeedData(feedUrl: string) {
             this.isLoadingContent = true;
             try {
-                const { fetchFeedItem } = await import('../../services/mock');
                 const response = await fetchFeedItem(feedUrl);
                 this.feedItems = response.list;
                 // Optionally update curr_feed if it's different or missing info
@@ -103,7 +104,6 @@ export const useUserStore = defineStore('user', {
 
         async fetchFeedsAIData(feedUrl: string) {
             try {
-                const { fetchFeedsAIItem } = await import('../../services/mock');
                 const response = await fetchFeedsAIItem(feedUrl);
                 this.feedAIAnalysis = response.feed_ai_analysis;
                 this.feedItemAIBotsContent = response.feed_item_ai_bots_content ?? {};
@@ -127,6 +127,10 @@ export const useUserStore = defineStore('user', {
         },
         setDateRange(range: DateRange) {
             this.date_range = range;
+            this.saveState();
+        },
+        setAIPanelWidth(width: number) {
+            this.ai_panel_width = width;
             this.saveState();
         },
 
@@ -168,6 +172,7 @@ export const useUserStore = defineStore('user', {
                 curr_tweet_id: this.curr_tweet_id,
                 curr_tags: this.curr_tags,
                 date_range: this.date_range,
+                ai_panel_width: this.ai_panel_width,
             };
             storage.set(STATE_KEY, state, true);
         },

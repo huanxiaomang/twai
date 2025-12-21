@@ -144,5 +144,5 @@ export const fetchFeedInfo = async (feedUrl: string): Promise<Feed> => {
         ]
     }
 
-    return data;
+    return Promise.resolve(data);
 };

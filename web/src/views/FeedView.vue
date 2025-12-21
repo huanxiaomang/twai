@@ -4,7 +4,13 @@ import { useRoute } from "vue-router";
 import FeedFilter from "@/components/FeedFilter.vue";
 import OutlineView from "@/components/layout/outline-view/index.vue";
 import PostList from "@/components/layout/post-list/index.vue";
+import AiPanel from "@/components/layout/ai-panel/index.vue";
 import { useUserStore } from "@/stores/user";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 
 const store = useUserStore();
 const route = useRoute();
@@ -38,19 +44,31 @@ watch(
 </script>
 
 <template>
-  <div
-    class="flex flex-col h-screen w-full overflow-hidden bg-background text-foreground"
-  >
-    <FeedFilter
-      :class="[
-        isFilterWrapped ? 'h-30' : 'h-15',
-        'w-full shrink-0 transition-all duration-200',
-      ]"
-      @wrap-change="isFilterWrapped = $event"
-    />
-    <div class="flex-1 flex overflow-hidden">
-      <OutlineView />
-      <PostList />
-    </div>
+  <div class="h-screen w-full overflow-hidden bg-background text-foreground">
+    <ResizablePanelGroup direction="horizontal">
+      <ResizablePanel :default-size="100 - store.ai_panel_width" :min-size="30">
+        <div class="flex flex-col h-full">
+          <FeedFilter
+            :class="[
+              isFilterWrapped ? 'h-30' : 'h-15',
+              'w-full shrink-0 transition-all duration-200',
+            ]"
+            @wrap-change="isFilterWrapped = $event"
+          />
+          <div class="flex-1 flex overflow-hidden">
+            <OutlineView />
+            <PostList />
+          </div>
+        </div>
+      </ResizablePanel>
+      <ResizableHandle with-handle />
+      <ResizablePanel
+        :default-size="store.ai_panel_width"
+        :min-size="20"
+        v-on:resize="store.setAIPanelWidth"
+      >
+        <AiPanel />
+      </ResizablePanel>
+    </ResizablePanelGroup>
   </div>
 </template>

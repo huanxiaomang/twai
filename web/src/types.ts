@@ -64,6 +64,7 @@ export interface UserState {
     curr_tweet_id: string | null;
     curr_tags: string[];
     date_range: DateRange;
+    ai_panel_width: number;
 }
 
 export interface UserConfig {

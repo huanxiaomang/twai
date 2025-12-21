@@ -53,6 +53,19 @@ const isActive = (path: string) => {
           </router-link>
         </SidebarMenuButton>
       </SidebarMenuItem>
+
+      <SidebarMenuItem v-if="feeds.length === 0">
+        <SidebarMenuButton as-child class="h-auto py-2 opacity-80">
+          <router-link to="/settings" class="flex flex-col items-start gap-1">
+            <span class="text-[11px] leading-tight text-muted-foreground"
+              >暂无订阅源</span
+            >
+            <span class="text-[10px] leading-tight text-primary underline"
+              >前往设置添加</span
+            >
+          </router-link>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
     </SidebarMenu>
   </SidebarGroup>
 </template>

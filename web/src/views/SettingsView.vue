@@ -26,21 +26,22 @@ const addFeed = () => {
     return;
   }
 
-  store.subscribe_feed_url.push(newFeedUrl.value);
+  store.addFeedUrl(newFeedUrl.value);
   newFeedUrl.value = "";
-  store.saveConfig();
+  store.fetchAllFeedsInfo();
   toast.success("订阅源添加成功");
 };
 
 const removeFeed = (index: number) => {
   const url = store.subscribe_feed_url[index];
+  if (!url) return;
   toast(`确定要删除订阅源吗？`, {
     description: url,
     action: {
       label: "确认删除",
       onClick: () => {
-        store.subscribe_feed_url.splice(index, 1);
-        store.saveConfig();
+        store.removeFeedUrl(url);
+        store.fetchAllFeedsInfo();
         toast.success("已成功删除订阅源");
       },
     },
@@ -59,7 +60,7 @@ store.$subscribe(
 <template>
   <div class="h-full w-full overflow-y-auto bg-background">
     <div
-      class="container max-w-2xl py-12 px-6 space-y-12 animate-in fade-in slide-in-from-bottom-2 duration-500"
+      class="container mx-auto max-w-2xl py-12 px-6 space-y-12 animate-in fade-in slide-in-from-bottom-2 duration-500"
     >
       <div class="space-y-1">
         <h1 class="text-2xl font-semibold tracking-tight">设置</h1>
