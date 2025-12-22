@@ -35,8 +35,7 @@ watch(
   () => store.curr_feed?.feed_url,
   (newUrl) => {
     if (newUrl) {
-      store.fetchFeedData(newUrl);
-      store.fetchFeedsAIData(newUrl);
+      store.fetchFeedFullData(newUrl);
     }
   },
   { immediate: true }

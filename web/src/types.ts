@@ -4,6 +4,7 @@ export interface Feed {
     feed_url: string;
     avatar: string;
     ai_bots?: AIBotItem[];
+    version: string;
 }
 
 export interface FeedAIResponse {

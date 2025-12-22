@@ -5,12 +5,15 @@ import type {
     UserStarredItem,
     Feed,
     FeedItemContent,
+    FeedResponse,
+    FeedAIResponse,
     DateRange,
     UserInfo,
     UserAIConfig
 } from '@/types';
 import { storage } from '../../services/ls';
 import { fetchFeedInfo, fetchFeedItem, fetchFeedsAIItem } from '../../services/mock';
+import { logger } from '../../services/logger';
 
 const STATE_KEY = 'twai_user_state';
 const CONFIG_KEY = 'twai_user_config';
@@ -42,8 +45,15 @@ const initialStarred: UserStarredItem = {
     starred_items: [],
 };
 
+const CacheKeyFactory = {
+    version: (url: string) => `feed_version_${url}`,
+    data: (url: string, version: string) => `feed_data_${url}_${version}`,
+    ai: (url: string, version: string) => `feed_ai_${url}_${version}`,
+};
+
 export const useUserStore = defineStore('user', {
     state: () => {
+        // ... existing state initialization ...
         const savedState = storage.get<UserState>(STATE_KEY);
         const savedConfig = storage.get<UserConfig>(CONFIG_KEY);
         const savedStarred = storage.get<UserStarredItem>(STARRED_KEY);
@@ -80,35 +90,60 @@ export const useUserStore = defineStore('user', {
                 const feedPromises = this.subscribe_feed_url.map((url: string) => fetchFeedInfo(url));
                 this.feeds = await Promise.all(feedPromises);
             } catch (error) {
-                console.error('Failed to fetch feeds info:', error);
+                logger.error('获取订阅源信息失败', error, { showToast: true });
             } finally {
                 this.isLoadingFeeds = false;
             }
         },
 
-        async fetchFeedData(feedUrl: string) {
+        async fetchFeedFullData(feedUrl: string) {
             this.isLoadingContent = true;
             try {
-                const response = await fetchFeedItem(feedUrl);
-                this.feedItems = response.list;
-                // Optionally update curr_feed if it's different or missing info
-                if (response.feed) {
-                    this.curr_feed = response.feed;
+                // 1. Get latest version info
+                await this.fetchAllFeedsInfo();
+                const feed = this.feeds.find(f => f.feed_url === feedUrl);
+                const version = feed?.version || 'unknown';
+
+                const vKey = CacheKeyFactory.version(feedUrl);
+                const dKey = CacheKeyFactory.data(feedUrl, version);
+                const aKey = CacheKeyFactory.ai(feedUrl, version);
+
+                // 2. Handle version invalidation
+                const oldVersion = storage.get<string>(vKey);
+                if (oldVersion && oldVersion !== version) {
+                    storage.remove(CacheKeyFactory.data(feedUrl, oldVersion));
+                    storage.remove(CacheKeyFactory.ai(feedUrl, oldVersion));
                 }
+                storage.set(vKey, version, true);
+
+                // 3. Parallel Fetch (Cache or Network)
+                const [dataRes, aiRes] = await Promise.all([
+                    (async () => {
+                        const cached = storage.get<FeedResponse>(dKey);
+                        if (cached) return cached;
+                        const res = await fetchFeedItem(feedUrl);
+                        storage.set(dKey, res);
+                        return res;
+                    })(),
+                    (async () => {
+                        const cached = storage.get<FeedAIResponse>(aKey);
+                        if (cached) return cached;
+                        const res = await fetchFeedsAIItem(feedUrl);
+                        storage.set(aKey, res);
+                        return res;
+                    })()
+                ]);
+
+                // 4. Update State
+                this.feedItems = dataRes.list;
+                if (dataRes.feed) this.curr_feed = dataRes.feed;
+                this.feedAIAnalysis = aiRes.feed_ai_analysis;
+                this.feedItemAIBotsContent = aiRes.feed_item_ai_bots_content ?? {};
+
             } catch (error) {
-                console.error('Failed to fetch feed data:', error);
+                logger.error('获取订阅源详情失败', error, { showToast: true });
             } finally {
                 this.isLoadingContent = false;
-            }
-        },
-
-        async fetchFeedsAIData(feedUrl: string) {
-            try {
-                const response = await fetchFeedsAIItem(feedUrl);
-                this.feedAIAnalysis = response.feed_ai_analysis;
-                this.feedItemAIBotsContent = response.feed_item_ai_bots_content ?? {};
-            } catch (error) {
-                console.error('Failed to fetch feed AI data:', error);
             }
         },
 

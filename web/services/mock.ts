@@ -1,5 +1,6 @@
 import type { Feed, FeedItemContent, FeedResponse, FeedAIResponse } from '../src/types';
 import { storage } from './ls';
+import { logger } from './logger';
 
 // Mock URL or configurable
 const FEED_URL = '/eg2.json';
@@ -12,11 +13,11 @@ export const fetchFeedItem = async (feedUrl: string): Promise<FeedResponse> => {
 
     // const cachedData = storage.get<FeedResponse>(cacheKey);
     // if (cachedData) {
-    //     console.log(`[MockService] Cache hit for ${cacheKey}`);
+    //     logger.info(`Cache hit for ${cacheKey}`);
     //     return cachedData;
     // }
 
-    console.log(`[MockService] Cache miss for ${cacheKey}, fetching...`);
+    logger.info(`Cache miss for ${cacheKey}, fetching...`);
     try {
 
         const data: FeedResponse = {
@@ -25,6 +26,7 @@ export const fetchFeedItem = async (feedUrl: string): Promise<FeedResponse> => {
                 feed_id: "web",
                 feed_url: "github.com",
                 avatar: "https://vuejs.org/images/logo.png",
+                version: "1.0",
                 ai_bots: [
                     {
                         bot_id: "faker",
@@ -77,7 +79,7 @@ export const fetchFeedItem = async (feedUrl: string): Promise<FeedResponse> => {
 
         return data;
     } catch (error) {
-        console.error('[MockService] Fetch error:', error);
+        logger.error('Fetch error:', error);
         throw error;
     }
 };
@@ -87,11 +89,11 @@ export const fetchFeedsAIItem = async (feedUrl: string): Promise<FeedAIResponse>
 
     // const cachedData = storage.get<FeedAIResponse>(cacheKey);
     // if (cachedData) {
-    //     console.log(`[MockService] Cache hit for ${cacheKey}`);
+    //     logger.info(`Cache hit for ${cacheKey}`);
     //     return cachedData;
     // }
 
-    console.log(`[MockService] Cache miss for ${cacheKey}, fetching...`);
+    logger.info(`Cache miss for ${cacheKey}, fetching...`);
     try {
         const data: FeedAIResponse = {
             feed_ai_analysis: {
@@ -113,7 +115,7 @@ export const fetchFeedsAIItem = async (feedUrl: string): Promise<FeedAIResponse>
 
         return data;
     } catch (error) {
-        console.error('[MockService] Fetch error:', error);
+        logger.error('Fetch error:', error);
         throw error;
     }
 };
@@ -126,6 +128,7 @@ export const fetchFeedInfo = async (feedUrl: string): Promise<Feed> => {
         feed_id: "web",
         feed_url: feedUrl,
         avatar: "https://vuejs.org/images/logo.png",
+        version: "1.0",
         ai_bots: [
             {
                 bot_id: "faker",
