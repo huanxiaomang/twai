@@ -14,7 +14,7 @@ import type {
 } from '@/types';
 import { parseISO, isWithinInterval, subDays, isSameDay } from "date-fns";
 import { storage } from '../../services/ls';
-import { fetchFeedInfo, fetchFeedItem, fetchFeedsAIItem } from '../../services/mock';
+import { fetchFeedInfo, fetchFeedItem, fetchFeedsAIItem, fetchFeedOverview } from '../../services/request';
 import { logger } from '../../services/logger';
 import { toast } from 'vue-sonner';
 
@@ -35,6 +35,7 @@ const initialConfig: UserConfig = {
     subscribe_feed_url: [],
     starred_items: {},
     show_video_download_prompt: true,
+    auto_translate_chinese: true,
 };
 
 const initialState: UserState = {
@@ -56,46 +57,39 @@ const CacheKeyFactory = {
 };
 
 export const useUserStore = defineStore('user', {
-    state: () => {
-        const savedState = storage.get<UserState>(STATE_KEY);
-        const savedConfig = storage.get<UserConfig>(CONFIG_KEY);
+    state: () => ({
+        // UserState
+        curr_feed: initialState.curr_feed,
+        curr_tweet_id: initialState.curr_tweet_id,
+        curr_tags: initialState.curr_tags,
+        date_range: initialState.date_range,
+        ai_panel_width: initialState.ai_panel_width,
+        outline_panel_width: initialState.outline_panel_width,
+        is_outline_visible: initialState.is_outline_visible,
+        is_ai_panel_visible: initialState.is_ai_panel_visible,
+        scroll_offset: initialState.scroll_offset,
 
-        return {
-            // UserState
-            curr_feed: savedState?.curr_feed ?? initialState.curr_feed,
-            curr_tweet_id: savedState?.curr_tweet_id ?? initialState.curr_tweet_id,
-            curr_tags: savedState?.curr_tags ?? initialState.curr_tags,
-            date_range: savedState?.date_range ?? initialState.date_range,
-            ai_panel_width: savedState?.ai_panel_width ?? initialState.ai_panel_width,
-            outline_panel_width: savedState?.outline_panel_width ?? initialState.outline_panel_width,
-            is_outline_visible: savedState?.is_outline_visible ?? initialState.is_outline_visible,
-            is_ai_panel_visible: savedState?.is_ai_panel_visible ?? initialState.is_ai_panel_visible,
-            scroll_offset: savedState?.scroll_offset ?? initialState.scroll_offset,
+        // UserConfig
+        user: initialConfig.user,
+        ai_config: initialConfig.ai_config,
+        subscribe_feed_url: initialConfig.subscribe_feed_url,
+        starred_items: initialConfig.starred_items,
+        show_video_download_prompt: initialConfig.show_video_download_prompt,
+        auto_translate_chinese: initialConfig.auto_translate_chinese,
 
-            // UserConfig
-            user: savedConfig?.user ?? initialConfig.user,
-            ai_config: savedConfig?.ai_config ?? initialConfig.ai_config,
-            subscribe_feed_url: savedConfig?.subscribe_feed_url ?? initialConfig.subscribe_feed_url,
-            starred_items: savedConfig?.starred_items ?? initialConfig.starred_items,
-            show_video_download_prompt: savedConfig?.show_video_download_prompt ?? initialConfig.show_video_download_prompt,
-
-            // Runtime State (Not persisted)
-            feeds: [] as Feed[],
-            feedItems: [] as TweetItem[],
-            tagsInfo: [] as TagInfo[],
-            feedAIAnalysis: {} as Record<string, string>,
-            feedItemAIBotsContent: {} as Record<string, Record<string, string>>,
-            isLoadingFeeds: false,
-            isLoadingContent: false,
-            isInternalScrolling: false,
-        };
-    },
+        // Runtime State (Not persisted)
+        feeds: [] as Feed[],
+        feedItems: [] as TweetItem[],
+        tagsInfo: [] as TagInfo[],
+        feedAIAnalysis: {} as Record<string, string>,
+        feedItemAIBotsContent: {} as Record<string, Record<string, string>>,
+        isLoadingFeeds: false,
+        isLoadingContent: false,
+        isInternalScrolling: false,
+        isInitialized: false,
+    }),
     getters: {
         groupedFilteredItems(state): Tweets[] {
-            if (state.curr_tags.length === 0) {
-                return [];
-            }
-
             // 1. First, get all items and filter them
             let list = [...state.feedItems];
 
@@ -104,12 +98,13 @@ export const useUserStore = defineStore('user', {
             if (range === "starred") {
                 const feedId = state.curr_feed?.feed_id;
                 list = list.filter((item) => {
-                    return feedId && state.starred_items[feedId]?.includes(item.tw_id);
+                    return item && feedId && state.starred_items[feedId]?.includes(item.tw_id);
                 });
             } else if (range === "last_day") {
                 const now = new Date();
                 const yesterday = subDays(now, 1);
                 list = list.filter((item) => {
+                    if (!item) return false;
                     const date = parseISO(item.date_published);
                     return isWithinInterval(date, { start: yesterday, end: now });
                 });
@@ -117,6 +112,7 @@ export const useUserStore = defineStore('user', {
                 const now = new Date();
                 const lastWeek = subDays(now, 7);
                 list = list.filter((item) => {
+                    if (!item) return false;
                     const date = parseISO(item.date_published);
                     return isWithinInterval(date, { start: lastWeek, end: now });
                 });
@@ -124,6 +120,7 @@ export const useUserStore = defineStore('user', {
                 try {
                     const targetDate = parseISO(range);
                     list = list.filter((item) => {
+                        if (!item) return false;
                         const itemDate = parseISO(item.date_published);
                         return isSameDay(itemDate, targetDate);
                     });
@@ -135,7 +132,7 @@ export const useUserStore = defineStore('user', {
             // Tags Filter
             if (state.curr_tags.length > 0) {
                 list = list.filter((item) => {
-                    if (!item.tags) return false;
+                    if (!item || !item.tags) return false;
                     return item.tags.some((tag) => state.curr_tags.includes(tag));
                 });
             }
@@ -164,9 +161,72 @@ export const useUserStore = defineStore('user', {
         },
         filteredFeedItems(): TweetItem[] {
             return this.groupedFilteredItems.flatMap(group => group.tweets);
+        },
+        tagCounts(state): Record<string, number> {
+            // Calculate counts based on items filtered by date range (but not tags)
+            let list = [...state.feedItems];
+            const range = state.date_range;
+
+            if (range === "starred") {
+                const feedId = state.curr_feed?.feed_id;
+                list = list.filter((item) => feedId && state.starred_items[feedId]?.includes(item.tw_id));
+            } else if (range === "last_day") {
+                const now = new Date();
+                const yesterday = subDays(now, 1);
+                list = list.filter((item) => isWithinInterval(parseISO(item.date_published), { start: yesterday, end: now }));
+            } else if (range === "last_week") {
+                const now = new Date();
+                const lastWeek = subDays(now, 7);
+                list = list.filter((item) => isWithinInterval(parseISO(item.date_published), { start: lastWeek, end: now }));
+            } else if (range !== "all" && range) {
+                try {
+                    const targetDate = parseISO(range);
+                    list = list.filter((item) => isSameDay(parseISO(item.date_published), targetDate));
+                } catch (e) { }
+            }
+
+            const counts: Record<string, number> = {};
+            list.forEach(item => {
+                if (!item) return;
+                item.tags?.forEach(tag => {
+                    counts[tag] = (counts[tag] || 0) + 1;
+                });
+            });
+            return counts;
         }
     },
     actions: {
+        async init() {
+            if (this.isInitialized) return;
+
+            const [savedState, savedConfig] = await Promise.all([
+                storage.get<UserState>(STATE_KEY),
+                storage.get<UserConfig>(CONFIG_KEY)
+            ]);
+
+            if (savedState) {
+                this.curr_feed = savedState.curr_feed ?? initialState.curr_feed;
+                this.curr_tweet_id = savedState.curr_tweet_id ?? initialState.curr_tweet_id;
+                this.curr_tags = savedState.curr_tags ?? initialState.curr_tags;
+                this.date_range = savedState.date_range ?? initialState.date_range;
+                this.ai_panel_width = savedState.ai_panel_width ?? initialState.ai_panel_width;
+                this.outline_panel_width = savedState.outline_panel_width ?? initialState.outline_panel_width;
+                this.is_outline_visible = savedState.is_outline_visible ?? initialState.is_outline_visible;
+                this.is_ai_panel_visible = savedState.is_ai_panel_visible ?? initialState.is_ai_panel_visible;
+                this.scroll_offset = savedState.scroll_offset ?? initialState.scroll_offset;
+            }
+
+            if (savedConfig) {
+                this.user = savedConfig.user ?? initialConfig.user;
+                this.ai_config = savedConfig.ai_config ?? initialConfig.ai_config;
+                this.subscribe_feed_url = savedConfig.subscribe_feed_url ?? initialConfig.subscribe_feed_url;
+                this.starred_items = savedConfig.starred_items ?? initialConfig.starred_items;
+                this.show_video_download_prompt = savedConfig.show_video_download_prompt ?? initialConfig.show_video_download_prompt;
+                this.auto_translate_chinese = savedConfig.auto_translate_chinese ?? initialConfig.auto_translate_chinese;
+            }
+
+            this.isInitialized = true;
+        },
         async fetchAllFeedsInfo() {
             this.isLoadingFeeds = true;
             try {
@@ -193,45 +253,41 @@ export const useUserStore = defineStore('user', {
                 const aKey = CacheKeyFactory.ai(feedUrl, version);
 
                 // 2. Handle version invalidation
-                const oldVersion = storage.get<string>(vKey);
+                const oldVersion = await storage.get<string>(vKey);
                 if (oldVersion && oldVersion !== version) {
-                    storage.remove(CacheKeyFactory.data(feedUrl, oldVersion));
-                    storage.remove(CacheKeyFactory.ai(feedUrl, oldVersion));
+                    await storage.remove(CacheKeyFactory.data(feedUrl, oldVersion));
+                    await storage.remove(CacheKeyFactory.ai(feedUrl, oldVersion));
                 }
-                storage.set(vKey, version, true);
+                await storage.set(vKey, version, true);
 
                 // 3. Parallel Fetch (Cache or Network)
                 const [dataRes, aiRes] = await Promise.all([
                     (async () => {
-                        const cached = storage.get<FeedResponse>(dKey);
+                        const cached = await storage.get<FeedResponse>(dKey);
                         if (cached) return cached;
                         const res = await fetchFeedItem(feedUrl);
-                        storage.set(dKey, res);
+                        await storage.set(dKey, res);
                         return res;
                     })(),
                     (async () => {
-                        const cached = storage.get<FeedAIResponse>(aKey);
+                        const cached = await storage.get<FeedAIResponse>(aKey);
                         if (cached) return cached;
                         const res = await fetchFeedsAIItem(feedUrl);
-                        storage.set(aKey, res);
+                        await storage.set(aKey, res);
                         return res;
                     })()
                 ]);
 
                 // 4. Update State
-                this.feedItems = dataRes.list.flatMap(group => group.tweets);
+                this.feedItems = dataRes.list.flatMap((group: any) => group.tweets);
 
                 this.tagsInfo = dataRes.tags_info ?? [];
                 if (dataRes.feed) {
                     this.curr_feed = dataRes.feed;
-                    // Ensure favicon_map exists and merge favicons from the grouped list
-                    if (!this.curr_feed.favicon_map) this.curr_feed.favicon_map = {};
-                    dataRes.list.forEach(group => {
-                        this.curr_feed!.favicon_map![group.author.author_name] = group.author.author_favicon;
-                    });
                 }
-                this.feedAIAnalysis = aiRes.feed_ai_analysis;
+                this.feedAIAnalysis = {};
                 this.feedItemAIBotsContent = aiRes.feed_item_ai_bots_content ?? {};
+
 
             } catch (error) {
                 logger.error('获取订阅源详情失败', error, { showToast: true });
@@ -242,6 +298,40 @@ export const useUserStore = defineStore('user', {
                     await new Promise(resolve => setTimeout(resolve, minDelay - elapsed));
                 }
                 this.isLoadingContent = false;
+            }
+        },
+
+        async fetchOverview(date: string) {
+            if (!this.curr_feed) return;
+            // Check if already in memory state
+            if (this.feedAIAnalysis[date]) return;
+
+            const feedUrl = this.curr_feed.feed_url;
+            const version = this.curr_feed.version || 'unknown';
+            const cacheKey = `feed_ai_overview_${feedUrl}_${version}_${date}`;
+
+            // Check persistent storage
+            const cached = await storage.get<string>(cacheKey);
+            if (cached) {
+                this.feedAIAnalysis = {
+                    ...this.feedAIAnalysis,
+                    [date]: cached
+                };
+                return;
+            }
+
+            try {
+                const res = await fetchFeedOverview(feedUrl, date);
+                if (res && res[date]) {
+                    this.feedAIAnalysis = {
+                        ...this.feedAIAnalysis,
+                        [date]: res[date]
+                    };
+                    // Save to persistent storage
+                    await storage.set(cacheKey, res[date]);
+                }
+            } catch (e) {
+                console.error("Failed to fetch overview:", e);
             }
         },
 
@@ -367,7 +457,7 @@ export const useUserStore = defineStore('user', {
         },
 
         // Persistence
-        saveState() {
+        async saveState() {
             const state: UserState = {
                 curr_feed: this.curr_feed,
                 curr_tweet_id: this.curr_tweet_id,
@@ -379,21 +469,21 @@ export const useUserStore = defineStore('user', {
                 is_ai_panel_visible: this.is_ai_panel_visible,
                 scroll_offset: this.scroll_offset,
             };
-            storage.set(STATE_KEY, state, true);
+            await storage.set(STATE_KEY, state, true);
         },
-        saveConfig() {
+        async saveConfig() {
             const config: UserConfig = {
                 user: this.user,
                 ai_config: this.ai_config,
                 subscribe_feed_url: this.subscribe_feed_url,
                 starred_items: this.starred_items,
                 show_video_download_prompt: this.show_video_download_prompt,
+                auto_translate_chinese: this.auto_translate_chinese,
             };
-            storage.set(CONFIG_KEY, config, true);
+            await storage.set(CONFIG_KEY, config, true);
         },
-        saveAll() {
-            this.saveState();
-            this.saveConfig();
+        async saveAll() {
+            await Promise.all([this.saveState(), this.saveConfig()]);
         }
     }
 });

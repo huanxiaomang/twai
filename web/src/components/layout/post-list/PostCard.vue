@@ -49,10 +49,20 @@ const isStarred = computed(() => {
 const shouldFold = computed(() => (props.item.content?.length || 0) > maxChars);
 
 const displayContent = computed(() => {
-  if (isFolded.value && shouldFold.value) {
-    return props.item.content?.substring(0, maxChars) + "...";
+  // Determine which content to show based on translation setting
+  let content: string;
+  if (!store.auto_translate_chinese && props.item.is_translated) {
+    // Show original if translation is disabled and item is translated
+    content = props.item.originText || props.item.content;
+  } else {
+    // Otherwise show the (possibly translated) content
+    content = props.item.content;
   }
-  return props.item.content;
+
+  if (isFolded.value && shouldFold.value) {
+    return content?.substring(0, maxChars) + "...";
+  }
+  return content;
 });
 
 const parsedContentParts = computed(() => {
@@ -117,7 +127,8 @@ const openTwitter = (e: Event) => {
 
 const copyToClipboard = async (e: Event) => {
   e.stopPropagation();
-  const text = props.item.content || "";
+  // Copy the currently displayed content
+  const text = displayContent.value || "";
   try {
     await navigator.clipboard.writeText(text);
     isCopied.value = true;

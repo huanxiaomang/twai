@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user";
-import { fetchFeedInfo } from "../../services/mock";
+import { fetchFeedInfo } from "../../services/request";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,9 +21,12 @@ import {
   Upload,
   Database,
   Loader2,
+  Languages,
 } from "lucide-vue-next";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const store = useUserStore();
 
@@ -286,6 +289,38 @@ store.$subscribe(
                     暂无订阅源。
                   </p>
                 </div>
+              </div>
+            </FieldGroup>
+          </FieldSet>
+
+          <FieldSeparator />
+
+          <FieldSet>
+            <div class="flex items-center gap-1.5">
+              <Languages class="w-4 h-4 text-muted-foreground" />
+              <span class="text-lg font-bold tracking-tight">翻译设置</span>
+            </div>
+            <FieldGroup class="mt-1">
+              <div
+                class="flex items-center justify-between p-3 rounded-md border bg-muted/30"
+              >
+                <div class="space-y-0.5">
+                  <Label
+                    for="auto-translate"
+                    class="text-sm font-medium cursor-pointer"
+                  >
+                    自动翻译为中文
+                  </Label>
+                  <p class="text-xs text-muted-foreground">
+                    开启后，非中文内容将自动翻译为中文显示
+                  </p>
+                </div>
+                <Switch
+                  id="auto-translate"
+                  v-model="store.auto_translate_chinese"
+                  :default-value="true"
+                  @update:checked="(val: boolean) => store.auto_translate_chinese = val"
+                />
               </div>
             </FieldGroup>
           </FieldSet>

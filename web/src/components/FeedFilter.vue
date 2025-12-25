@@ -50,7 +50,7 @@ const tags = computed(() =>
   store.tagsInfo.map((t) => ({
     id: t.tag_id,
     label: t.tag_name,
-    count: t.tag_count,
+    count: store.tagCounts[t.tag_id] || 0,
   }))
 );
 

@@ -1,0 +1,3 @@
+{
+  "2025-12-18": " # 🐱 2025年12月18日 推特概览\n\n## 🛠️ 前端工具链进展\n\n**Rolldown 新功能上线**  \nRolldown 现在支持 `postBanner` 和 `postFooter` 配置项啦~这两个选项会在代码压缩**之后**添加内容,确保你的注释不会被优化掉,和普通的 `banner`/`footer` 不同喵!想试试的话可以去他们的 REPL 玩玩~ <tweet-link tw-id='783008ee55035e9082c23beb081a5e23'>Rolldown postBanner/postFooter 功能</tweet-link>\n\n**Angular CLI 迁移到 Rolldown**  \n有开发者发现 Angular CLI 中使用 `NG_BUILD_OPTIMIZE_CHUNKS` 的构建工具已经从 Rollup 切换到 Rolldown 了!这标志着 Rolldown 在主流框架中的应用越来越广泛~ <tweet-link tw-id='ef90c42594eb507d735671ed90f7bb46'>Angular 用 Rolldown</tweet-link>\n\n## 💬 社区动态\n\n有开发者呼吁 GitHub 新负责人在\"拯救 GitHub\"的同时,也关注一下 npm 的改进需求~ <tweet-link tw-id='212a789daef1c79404fa4e1a7951c334'>npm 改进呼吁</tweet-link>\n\n---\n\n2025年12月18日这一天的前端圈概况就是这些喵~主要是 Rolldown 在持续发力,功能越来越完善啦! 🎉"
+}

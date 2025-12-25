@@ -1,15 +1,25 @@
+export interface Author {
+    author_id: string;
+    author_name: string;
+    author_favicon: string;
+}
+
+export interface TagInfo {
+    tag_id: string;
+    tag_name: string;
+}
+
 export interface Feed {
     name: string;
     feed_id: string;
     feed_url: string;
     avatar: string;
-    favicon_map?: Record<string, string>;
     ai_bots?: AIBotItem[];
     version: string;
 }
 
 export interface FeedAIResponse {
-    feed_ai_analysis: Record<string, string>; // Overview, summary, etc.
+    overview?: Record<string, string>;  // date -> content
     feed_item_ai_bots_content?: Record<string, Record<string, string>>; // tw_id -> bot_id -> content
 }
 
@@ -25,7 +35,6 @@ export interface TweetItem {
         name: string;
     }[];                            // 如果是转发贴，里面的第一项的name就是被转发的原帖的作者id
     url: string;                    // 推文完整链接
-    title: string;                  // 推文标题
     content: string;                // 提取后的纯正文文本（保留换行，无签名、无 RT 前缀）
     originText: string;             // 如果被翻译，翻译前的原文
     date_published: string;         // ISO 格式发布时间
@@ -45,20 +54,6 @@ export interface FeedResponse {
     feed: Feed;
     list: Tweets[];
     tags_info?: TagInfo[];
-    feed_ai_analysis: Record<string, string>; // Overview, summary, etc.
-    feed_item_ai_bots_content?: Record<string, Record<string, string>>; // tw_id -> bot_id -> content
-}
-
-export interface TagInfo {
-    tag_id: string;
-    tag_name: string;
-    tag_count: number;
-}
-
-export interface Author {
-    author_id: string;
-    author_name: string;
-    author_favicon: string;
 }
 
 export interface Attachment {
@@ -93,6 +88,7 @@ export interface UserConfig {
     subscribe_feed_url: string[];
     starred_items: Record<string, string[]>; // feed_id -> tw_id
     show_video_download_prompt: boolean;
+    auto_translate_chinese: boolean;
 }
 
 export type DateRange = "all" | "starred" | "last_day" | "last_week" | (string & {});

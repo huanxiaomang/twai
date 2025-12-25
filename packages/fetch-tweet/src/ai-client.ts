@@ -12,6 +12,11 @@ export class AIClient {
     private running: number = 0;
     private queue: (() => void)[] = [];
 
+    // Rate limiting
+    private tokenUsage: number = 0;
+    private lastResetTime: number = Date.now();
+    private readonly MAX_TOKENS_PER_MINUTE = 250000;
+
     constructor(maxConcurrent: number = 3) {
         this.maxConcurrent = maxConcurrent;
     }
@@ -24,13 +29,56 @@ export class AIClient {
         }
 
         this.running++;
+        console.log(`Processing ${this.running}/${this.maxConcurrent}`);
 
         try {
-            await this.callAIStream(options);
+            // Check rate limit before starting
+            await this.checkRateLimit(options.prompt.length);
+            await this.callAIStreamWithRetry(options);
         } finally {
             this.running--;
             const next = this.queue.shift();
             if (next) next();
+        }
+    }
+
+    private async checkRateLimit(estimatedTokens: number): Promise<void> {
+        const now = Date.now();
+        if (now - this.lastResetTime > 60000) {
+            this.tokenUsage = 0;
+            this.lastResetTime = now;
+        }
+
+        // Simple estimation: 1 char ~= 1 token (conservative for Chinese/Code)
+        // Or just track request size.
+        // The user said "context size", which usually means input + output.
+        // We only know input here. Let's assume input is the main factor or just track it.
+        // Actually, the error is 429 Resource Exhausted, which might be RPM or TPM.
+        // The user specifically mentioned "250k context size per minute".
+
+        this.tokenUsage += estimatedTokens;
+
+        if (this.tokenUsage > this.MAX_TOKENS_PER_MINUTE) {
+            const waitTime = 60000 - (now - this.lastResetTime) + 1000; // Wait until next minute + buffer
+            if (waitTime > 0) {
+                console.warn(`[Rate Limit] Token usage (${this.tokenUsage}) exceeded ${this.MAX_TOKENS_PER_MINUTE}/min. Waiting ${Math.ceil(waitTime / 1000)}s...`);
+                await new Promise(resolve => setTimeout(resolve, waitTime));
+                this.tokenUsage = 0;
+                this.lastResetTime = Date.now();
+            }
+        }
+    }
+
+    private async callAIStreamWithRetry(options: AIRequestOptions, retries = 3): Promise<void> {
+        try {
+            await this.callAIStream(options);
+        } catch (error: any) {
+            if (retries > 0 && error.message.includes('429')) {
+                console.warn(`[429 Too Many Requests] Quota exhausted. Waiting 30s before retrying... (Retries left: ${retries})`);
+                await new Promise(resolve => setTimeout(resolve, 30000));
+                return this.callAIStreamWithRetry(options, retries - 1);
+            }
+            throw error;
         }
     }
 

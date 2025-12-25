@@ -25,10 +25,15 @@ watch(
   () => route.params.feed_id,
   async (newId) => {
     if (newId) {
-      // Ensure feeds are loaded
+      // Ensure store is initialized first (to load subscribe_feed_url from localStorage)
+      await store.init();
+
+      // Then ensure feeds are loaded
       if (store.feeds.length === 0) {
         await store.fetchAllFeedsInfo();
       }
+
+      // Now find the feed after ensuring feeds are loaded
       const feed = store.feeds.find((f) => f.feed_id === newId);
       if (feed) {
         isFeedValid.value = true;

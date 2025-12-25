@@ -1,0 +1,432 @@
+{
+  "version": "https://jsonfeed.org/version/1.1",
+  "title": "Evan You (@youyuxi) / Twitter",
+  "home_page_url": "https://x.com/youyuxi",
+  "feed_url": "https://rss.app/feeds/v1.1/KfTb9CIgQDdxIs7L.json",
+  "favicon": "https://pbs.twimg.com/profile_images/1856284397072478208/hSEXLkPN_400x400.jpg",
+  "language": "en",
+  "description": "Evan You (@youyuxi) / Twitter",
+  "items": [
+    {
+      "id": "d2ff70ed458e7c48a9fc518d9c7bcb18",
+      "url": "https://x.com/boshen_c/status/2004059221311320377",
+      "title": "RT by @youyuxi: Oxc -> vuejs/core 🎅 PR: * github.com/vuejs/core/pull/1… * github.com/vuejs/core/pull/1…",
+      "content_text": "Oxc -> vuejs/core 🎅\n\nPR:\n* github.com/vuejs/core/pull/1…\n* github.com/vuejs/core/pull/1…— Boshen (@boshen_c) Dec 25, 2025",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">Oxc -> vuejs/core 🎅<br><br>PR:<br>* <a href=\"https://github.com/vuejs/core/pull/13326\">github.com/vuejs/core/pull/1…</a><br>* <a href=\"https://github.com/vuejs/core/pull/14238\">github.com/vuejs/core/pull/1…</a></p>— Boshen (@boshen_c) <a href=\"https://twitter.com/boshen_c/status/2004059221311320377\">Dec 25, 2025</a></blockquote><script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "image": "https://pbs.twimg.com/media/G8_Y06PaYAA93lh.jpg?name=small&format=webp",
+      "date_published": "2025-12-25T05:18:00.000Z",
+      "authors": [
+        {
+          "name": "@boshen_c"
+        }
+      ],
+      "attachments": [
+        {
+          "url": "https://pbs.twimg.com/media/G8_Y06PaYAA93lh.jpg?name=small&format=webp"
+        }
+      ]
+    },
+    {
+      "id": "c5db19b9b1687306e3fe172d715f1014",
+      "url": "https://x.com/youyuxi/status/2003608551886061602",
+      "title": "Be careful what you wish for 👀",
+      "content_text": "Be careful what you wish for 👀— Evan You (@youyuxi) Dec 23, 2025",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">Be careful what you wish for 👀</p>— Evan You (@youyuxi) <a href=\"https://twitter.com/youyuxi/status/2003608551886061602\">Dec 23, 2025</a></blockquote><script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "date_published": "2025-12-23T23:27:00.000Z",
+      "authors": [
+        {
+          "name": "@youyuxi"
+        }
+      ]
+    },
+    {
+      "id": "daf38f2a56be07afb3a49e76796a69bc",
+      "url": "https://x.com/vueconfus/status/2003511008539574587",
+      "title": "RT by @youyuxi: Training budget still open? 👀#VueConfUS 2026 is a 3-day deep dive into modern frontend: Vue, Nuxt, testing, performance, and real-world workflows you can apply immediately. Stronger skills, better code, faster teams 🚀💥 Convince your boss →",
+      "content_text": "Training budget still open? 👀#VueConfUS 2026 is a 3-day deep dive into modern frontend: Vue, Nuxt, testing, performance, and real-world workflows you can apply immediately. \n\nStronger skills, better code, faster teams 🚀💥\n\nConvince your boss → https://t.co/ikzZHUx4Bc pic.twitter.com/nSH2rlfXxN— Vueconf.US (@vueconfus) December 23, 2025\n",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">Training budget still open? 👀<a href=\"https://twitter.com/hashtag/VueConfUS?src=hash&ref_src=twsrc%5Etfw\">#VueConfUS</a> 2026 is a 3-day deep dive into modern frontend: Vue, Nuxt, testing, performance, and real-world workflows you can apply immediately. <br><br>Stronger skills, better code, faster teams 🚀💥<br><br>Convince your boss → <a href=\"https://t.co/ikzZHUx4Bc\">https://t.co/ikzZHUx4Bc</a> <a href=\"https://t.co/nSH2rlfXxN\">pic.twitter.com/nSH2rlfXxN</a></p>— Vueconf.US (@vueconfus) <a href=\"https://twitter.com/vueconfus/status/2003511008539574587?ref_src=twsrc%5Etfw\">December 23, 2025</a></blockquote>\n<script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "image": "https://pbs.twimg.com/ext_tw_video_thumb/2003509807731359745/pu/img/8fUCWvlIlQ4aSuf9.jpg",
+      "date_published": "2025-12-23T17:00:00.000Z",
+      "authors": [
+        {
+          "name": "@vueconfus"
+        }
+      ],
+      "attachments": [
+        {
+          "url": "https://pbs.twimg.com/ext_tw_video_thumb/2003509807731359745/pu/img/8fUCWvlIlQ4aSuf9.jpg"
+        }
+      ]
+    },
+    {
+      "id": "96bf75df6aae1183273591d91d44d663",
+      "url": "https://x.com/youyuxi/status/2003469603897536597",
+      "title": "Shoutout to the hard work by @edison11051 !",
+      "content_text": "Shoutout to the hard work by @edison11051 !— Evan You (@youyuxi) Dec 23, 2025",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">Shoutout to the hard work by <a href=\"https://x.com/edison11051\">@edison11051</a> !</p>— Evan You (@youyuxi) <a href=\"https://twitter.com/youyuxi/status/2003469603897536597\">Dec 23, 2025</a></blockquote><script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "image": "https://pbs.twimg.com/card_img/2003468057717755904/lZHep5gz?format=jpg&name=800x419",
+      "date_published": "2025-12-23T14:15:00.000Z",
+      "authors": [
+        {
+          "name": "@youyuxi"
+        }
+      ],
+      "attachments": [
+        {
+          "url": "https://pbs.twimg.com/card_img/2003468057717755904/lZHep5gz?format=jpg&name=800x419"
+        }
+      ]
+    },
+    {
+      "id": "c94c25195463fd881c50e79277dabafb",
+      "url": "https://x.com/youyuxi/status/2003309257958260916",
+      "title": "Next gen performance is here",
+      "content_text": "Next gen performance is here— Evan You (@youyuxi) Dec 23, 2025",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">Next gen performance is here</p>— Evan You (@youyuxi) <a href=\"https://twitter.com/youyuxi/status/2003309257958260916\">Dec 23, 2025</a></blockquote><script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "date_published": "2025-12-23T03:38:00.000Z",
+      "authors": [
+        {
+          "name": "@youyuxi"
+        }
+      ]
+    },
+    {
+      "id": "475db90caa7a0eaccf0f8b0e79b4917c",
+      "url": "https://x.com/Cameron_C2/status/2003064699819061395",
+      "title": "RT by @youyuxi: Oxlint v1.35.0 & oxfmt v0.20.0 are out! 🚀 → Code path analysis (CFG) for custom plugins → node API for oxfmt → 13 new rules! → New options/fixers for 15+ rules (e.g., no-base-to-string, no-unnecessary-type-assertion) → RuleTester globals support + plugin aliasing →…",
+      "content_text": "Oxlint v1.35.0 & oxfmt v0.20.0 are out! 🚀\n\n→ Code path analysis (CFG) for custom plugins\n→ node API for oxfmt\n→ 13 new rules!\n→ New options/fixers for 15+ rules (e.g., no-base-to-string, no-unnecessary-type-assertion)\n→ RuleTester globals support + plugin aliasing\n→…— Cam (@Cameron_C2) December 22, 2025\n",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">Oxlint v1.35.0 & oxfmt v0.20.0 are out! 🚀<br><br>→ Code path analysis (CFG) for custom plugins<br>→ node API for oxfmt<br>→ 13 new rules!<br>→ New options/fixers for 15+ rules (e.g., no-base-to-string, no-unnecessary-type-assertion)<br>→ RuleTester globals support + plugin aliasing<br>→…</p>— Cam (@Cameron_C2) <a href=\"https://twitter.com/Cameron_C2/status/2003064699819061395?ref_src=twsrc%5Etfw\">December 22, 2025</a></blockquote>\n<script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "date_published": "2025-12-22T11:26:00.000Z",
+      "authors": [
+        {
+          "name": "@Cameron_C2"
+        }
+      ]
+    },
+    {
+      "id": "81e114d176c699ecfb26d9c2b775c2c9",
+      "url": "https://x.com/overlook_motel/status/2002849279535120863",
+      "title": "RT by @youyuxi: Anyone been tempted to contribute to @OxcProject but been put off by lack of Rust knowledge? This might be the one for you... Pure JS-side code in desperate need of optimization!",
+      "content_text": "Anyone been tempted to contribute to @OxcProject but been put off by lack of Rust knowledge? This might be the one for you... Pure JS-side code in desperate need of optimization! https://t.co/0DANm8kvFJ— overlookmotel (@overlook_motel) December 21, 2025\n",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">Anyone been tempted to contribute to <a href=\"https://twitter.com/OxcProject?ref_src=twsrc%5Etfw\">@OxcProject</a> but been put off by lack of Rust knowledge? This might be the one for you... Pure JS-side code in desperate need of optimization! <a href=\"https://t.co/0DANm8kvFJ\">https://t.co/0DANm8kvFJ</a></p>— overlookmotel (@overlook_motel) <a href=\"https://twitter.com/overlook_motel/status/2002849279535120863?ref_src=twsrc%5Etfw\">December 21, 2025</a></blockquote>\n<script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "image": "https://pbs.twimg.com/card_img/2002849074307809281/F_FukTQD?format=jpg&name=800x419",
+      "date_published": "2025-12-21T21:10:00.000Z",
+      "authors": [
+        {
+          "name": "@overlook_motel"
+        }
+      ],
+      "attachments": [
+        {
+          "url": "https://pbs.twimg.com/card_img/2002849074307809281/F_FukTQD?format=jpg&name=800x419"
+        }
+      ]
+    },
+    {
+      "id": "6ac6499bcc06793984990a7233be7e79",
+      "url": "https://x.com/serkodev/status/2002348215044354233",
+      "title": "RT by @youyuxi:",
+      "content_text": "https://t.co/39YbOfWbwZ pic.twitter.com/TnfHbbkt7V— SerKo (@serkodev) December 20, 2025\n",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"zxx\" dir=\"ltr\"><a href=\"https://t.co/39YbOfWbwZ\">https://t.co/39YbOfWbwZ</a> <a href=\"https://t.co/TnfHbbkt7V\">pic.twitter.com/TnfHbbkt7V</a></p>— SerKo (@serkodev) <a href=\"https://twitter.com/serkodev/status/2002348215044354233?ref_src=twsrc%5Etfw\">December 20, 2025</a></blockquote>\n<script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "image": "https://pbs.twimg.com/amplify_video_thumb/2002347836772659204/img/n0wUnwpBBiOIuhum.jpg",
+      "date_published": "2025-12-20T11:59:00.000Z",
+      "authors": [
+        {
+          "name": "@serkodev"
+        }
+      ],
+      "attachments": [
+        {
+          "url": "https://pbs.twimg.com/amplify_video_thumb/2002347836772659204/img/n0wUnwpBBiOIuhum.jpg"
+        }
+      ]
+    },
+    {
+      "id": "82d2755db68abb25b87ff591b4d3bad2",
+      "url": "https://x.com/johnsoncodehk/status/2002315783259447456",
+      "title": "RT by @youyuxi: Vue Language Tools 3.2 has been released! Release Notes 👇",
+      "content_text": "Vue Language Tools 3.2 has been released!\n\nRelease Notes 👇https://t.co/5utoLTtCG1— Johnson Chu (@johnsoncodehk) December 20, 2025\n",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">Vue Language Tools 3.2 has been released!<br><br>Release Notes 👇<a href=\"https://t.co/5utoLTtCG1\">https://t.co/5utoLTtCG1</a></p>— Johnson Chu (@johnsoncodehk) <a href=\"https://twitter.com/johnsoncodehk/status/2002315783259447456?ref_src=twsrc%5Etfw\">December 20, 2025</a></blockquote>\n<script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "image": "https://pbs.twimg.com/card_img/2000958549271384064/_KvdEN-5?format=png&name=800x419",
+      "date_published": "2025-12-20T09:50:00.000Z",
+      "authors": [
+        {
+          "name": "@johnsoncodehk"
+        }
+      ],
+      "attachments": [
+        {
+          "url": "https://pbs.twimg.com/card_img/2000958549271384064/_KvdEN-5?format=png&name=800x419"
+        }
+      ]
+    },
+    {
+      "id": "3c89de828051a56b8aa111f78aa93210",
+      "url": "https://x.com/djangoproject/status/2002030169540976952",
+      "title": "RT by @youyuxi: Some of the biggest companies in the world use Django, but the project's budget is comparable to a single bay-area engineer's salary. If your company uses Django, please ask them to donate! It's a great way to say thanks, and really helps keep the framework going.",
+      "content_text": "Some of the biggest companies in the world use Django, but the project's budget is comparable to a single bay-area engineer's salary.\n\nIf your company uses Django, please ask them to donate! It's a great way to say thanks, and really helps keep the framework going.— Django (@djangoproject) December 19, 2025\n",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">Some of the biggest companies in the world use Django, but the project's budget is comparable to a single bay-area engineer's salary.<br><br>If your company uses Django, please ask them to donate! It's a great way to say thanks, and really helps keep the framework going.</p>— Django (@djangoproject) <a href=\"https://twitter.com/djangoproject/status/2002030169540976952?ref_src=twsrc%5Etfw\">December 19, 2025</a></blockquote>\n<script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "date_published": "2025-12-19T14:56:00.000Z",
+      "authors": [
+        {
+          "name": "@djangoproject"
+        }
+      ]
+    },
+    {
+      "id": "7e8066317608fbb0d458f0bb72a7a29b",
+      "url": "https://x.com/boshen_c/status/2001878127228891251",
+      "title": "RT by @youyuxi: In the latest version of Oxfmt (better prettier replacement): • oxfmt --migrate prettier • oxfmit --init • oxfmt --stdin-filepath for pipe usage • Node.js API • Sort package.json fields by default • Respect root .editorconfig Give it a try:",
+      "content_text": "In the latest version of Oxfmt (better prettier replacement):\n\n• oxfmt --migrate prettier\n• oxfmit --init\n• oxfmt --stdin-filepath for pipe usage\n• Node.js API\n• Sort package.json fields by default\n• Respect root .editorconfig\n\nGive it a try:\n\n• https://t.co/O68UNpWalD— Boshen (@boshen_c) December 19, 2025\n",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">In the latest version of Oxfmt (better prettier replacement):<br><br>• oxfmt --migrate prettier<br>• oxfmit --init<br>• oxfmt --stdin-filepath for pipe usage<br>• Node.js API<br>• Sort package.json fields by default<br>• Respect root .editorconfig<br><br>Give it a try:<br><br>• <a href=\"https://t.co/O68UNpWalD\">https://t.co/O68UNpWalD</a></p>— Boshen (@boshen_c) <a href=\"https://twitter.com/boshen_c/status/2001878127228891251?ref_src=twsrc%5Etfw\">December 19, 2025</a></blockquote>\n<script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "date_published": "2025-12-19T04:51:00.000Z",
+      "authors": [
+        {
+          "name": "@boshen_c"
+        }
+      ]
+    },
+    {
+      "id": "783008ee55035e9082c23beb081a5e23",
+      "url": "https://x.com/voidzerodev/status/2001683010446299613",
+      "title": "RT by @youyuxi: Want to append or prepend content to your files? Then you can use `postBanner` and `postFooter` in @rolldown_rs now! The difference to `banner` and `footer`: The content will be added AFTER minification, making sure that comments are not removed Try it in our REPL…",
+      "content_text": "Want to append or prepend content to your files? Then you can use `postBanner` and `postFooter` in @rolldown_rs now!\n\nThe difference to `banner` and `footer`: The content will be added AFTER minification, making sure that comments are not removed\n\nTry it in our REPL… pic.twitter.com/qRjoClkaBz— VoidZero (@voidzerodev) December 18, 2025\n",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">Want to append or prepend content to your files? Then you can use `postBanner` and `postFooter` in <a href=\"https://twitter.com/rolldown_rs?ref_src=twsrc%5Etfw\">@rolldown_rs</a> now!<br><br>The difference to `banner` and `footer`: The content will be added AFTER minification, making sure that comments are not removed<br><br>Try it in our REPL… <a href=\"https://t.co/qRjoClkaBz\">pic.twitter.com/qRjoClkaBz</a></p>— VoidZero (@voidzerodev) <a href=\"https://twitter.com/voidzerodev/status/2001683010446299613?ref_src=twsrc%5Etfw\">December 18, 2025</a></blockquote>\n<script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "image": "https://pbs.twimg.com/media/G8doFvLWUAA9P9t.jpg?name=small&format=webp",
+      "date_published": "2025-12-18T15:56:00.000Z",
+      "authors": [
+        {
+          "name": "@voidzerodev"
+        }
+      ],
+      "attachments": [
+        {
+          "url": "https://pbs.twimg.com/media/G8doFvLWUAA9P9t.jpg?name=small&format=webp"
+        }
+      ]
+    },
+    {
+      "id": "212a789daef1c79404fa4e1a7951c334",
+      "url": "https://x.com/threepointone/status/2001671800053469478",
+      "title": "RT by @youyuxi: @jaredpalmer as part of saving github, could you also save npm? :) please and thank you from the internet.",
+      "content_text": "@jaredpalmer as part of saving github, could you also save npm? :) please and thank you from the internet.— sunil pai (@threepointone) December 18, 2025\n",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\"><a href=\"https://twitter.com/jaredpalmer?ref_src=twsrc%5Etfw\">@jaredpalmer</a> as part of saving github, could you also save npm? :) please and thank you from the internet.</p>— sunil pai (@threepointone) <a href=\"https://twitter.com/threepointone/status/2001671800053469478?ref_src=twsrc%5Etfw\">December 18, 2025</a></blockquote>\n<script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "date_published": "2025-12-18T15:12:00.000Z",
+      "authors": [
+        {
+          "name": "@threepointone"
+        }
+      ]
+    },
+    {
+      "id": "ef90c42594eb507d735671ed90f7bb46",
+      "url": "https://x.com/boshen_c/status/2001670828996669760",
+      "title": "RT by @youyuxi: Do I know anyone who uses the angular CLI with NG_BUILD_OPTIMIZE_CHUNKS? It was previously using Rollup and now Rolldown.",
+      "content_text": "Do I know anyone who uses the angular CLI with NG_BUILD_OPTIMIZE_CHUNKS? It was previously using Rollup and now Rolldown.— Boshen (@boshen_c) December 18, 2025\n",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">Do I know anyone who uses the angular CLI with NG_BUILD_OPTIMIZE_CHUNKS? It was previously using Rollup and now Rolldown.</p>— Boshen (@boshen_c) <a href=\"https://twitter.com/boshen_c/status/2001670828996669760?ref_src=twsrc%5Etfw\">December 18, 2025</a></blockquote>\n<script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "date_published": "2025-12-18T15:08:00.000Z",
+      "authors": [
+        {
+          "name": "@boshen_c"
+        }
+      ]
+    },
+    {
+      "id": "87dd186cb5594dda46b75a70c08e434a",
+      "url": "https://x.com/voidzerodev/status/2001342848898068784",
+      "title": "RT by @youyuxi: Want to understand why some of your @vitest_dev tests are slower than expected? Then you can use the built-in experimental @OpenTelemetry support to figure out what makes tests slow and how much time is spent on each part of it. 📈 When enabled, Vitest will generate traces…",
+      "content_text": "Want to understand why some of your @vitest_dev tests are slower than expected? Then you can use the built-in experimental @OpenTelemetry support to figure out what makes tests slow and how much time is spent on each part of it. 📈 \n\nWhen enabled, Vitest will generate traces… pic.twitter.com/Jyz5if6Mjf— VoidZero (@voidzerodev) December 17, 2025\n",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">Want to understand why some of your <a href=\"https://twitter.com/vitest_dev?ref_src=twsrc%5Etfw\">@vitest_dev</a> tests are slower than expected? Then you can use the built-in experimental <a href=\"https://twitter.com/opentelemetry?ref_src=twsrc%5Etfw\">@OpenTelemetry</a> support to figure out what makes tests slow and how much time is spent on each part of it. 📈 <br><br>When enabled, Vitest will generate traces… <a href=\"https://t.co/Jyz5if6Mjf\">pic.twitter.com/Jyz5if6Mjf</a></p>— VoidZero (@voidzerodev) <a href=\"https://twitter.com/voidzerodev/status/2001342848898068784?ref_src=twsrc%5Etfw\">December 17, 2025</a></blockquote>\n<script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "image": "https://pbs.twimg.com/media/G8Yyts4XIAAylGf.jpg?name=small&format=webp",
+      "date_published": "2025-12-17T17:24:00.000Z",
+      "authors": [
+        {
+          "name": "@voidzerodev"
+        }
+      ],
+      "attachments": [
+        {
+          "url": "https://pbs.twimg.com/media/G8Yyts4XIAAylGf.jpg?name=small&format=webp"
+        }
+      ]
+    },
+    {
+      "id": "fdb60dfd9d294105ae5dc6c76366571e",
+      "url": "https://x.com/Atinux/status/2001337705050058822",
+      "title": "RT by @youyuxi: Did we mention that you can also use it on a Vite + Vue project?",
+      "content_text": "Did we mention that you can also use it on a Vite + Vue project? https://t.co/kZf4Cbvew2— Sébastien Chopin (@Atinux) December 17, 2025\n",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">Did we mention that you can also use it on a Vite + Vue project? <a href=\"https://t.co/kZf4Cbvew2\">https://t.co/kZf4Cbvew2</a></p>— Sébastien Chopin (@Atinux) <a href=\"https://twitter.com/Atinux/status/2001337705050058822?ref_src=twsrc%5Etfw\">December 17, 2025</a></blockquote>\n<script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "image": "https://pbs.twimg.com/amplify_video_thumb/2001320239263268864/img/4oNlfCTBDbSW0HJp.jpg",
+      "date_published": "2025-12-17T17:04:00.000Z",
+      "authors": [
+        {
+          "name": "@Atinux"
+        }
+      ],
+      "attachments": [
+        {
+          "url": "https://pbs.twimg.com/amplify_video_thumb/2001320239263268864/img/4oNlfCTBDbSW0HJp.jpg"
+        }
+      ]
+    },
+    {
+      "id": "285aa74d9f96802c4abec6d1d52185bf",
+      "url": "https://x.com/youyuxi/status/2001265098984476808",
+      "title": "Had to answer this multiple times already, but yes this is how it was picked :)",
+      "content_text": "Had to answer this multiple times already, but yes this is how it was picked :)— Evan You (@youyuxi) Dec 17, 2025",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">Had to answer this multiple times already, but yes this is how it was picked :)</p>— Evan You (@youyuxi) <a href=\"https://twitter.com/youyuxi/status/2001265098984476808\">Dec 17, 2025</a></blockquote><script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "image": "https://pbs.twimg.com/amplify_video_thumb/2000957603199774721/img/97r6NOggzXvzCWYh.jpg",
+      "date_published": "2025-12-17T12:15:00.000Z",
+      "authors": [
+        {
+          "name": "@youyuxi"
+        }
+      ],
+      "attachments": [
+        {
+          "url": "https://pbs.twimg.com/amplify_video_thumb/2000957603199774721/img/97r6NOggzXvzCWYh.jpg"
+        }
+      ]
+    },
+    {
+      "id": "7003025698dabedec3138d5b62c52918",
+      "url": "https://x.com/boshen_c/status/2001221950216266185",
+      "title": "RT by @youyuxi: Tailwind CSS is coming early in oxfmt! 🎅 The POC it based on was me telling Claude to work on two codebases simultaneously - oxc and prettier-plugin-tailwindcss.",
+      "content_text": "Tailwind CSS is coming early in oxfmt! 🎅\n\nThe POC it based on was me telling Claude to work on two codebases simultaneously - oxc and prettier-plugin-tailwindcss.https://t.co/Om9Em2JSgX— Boshen (@boshen_c) December 17, 2025\n",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">Tailwind CSS is coming early in oxfmt! 🎅<br><br>The POC it based on was me telling Claude to work on two codebases simultaneously - oxc and prettier-plugin-tailwindcss.<a href=\"https://t.co/Om9Em2JSgX\">https://t.co/Om9Em2JSgX</a></p>— Boshen (@boshen_c) <a href=\"https://twitter.com/boshen_c/status/2001221950216266185?ref_src=twsrc%5Etfw\">December 17, 2025</a></blockquote>\n<script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "image": "https://pbs.twimg.com/card_img/2003758795500199936/1j8X-Hg_?format=jpg&name=800x419",
+      "date_published": "2025-12-17T09:24:00.000Z",
+      "authors": [
+        {
+          "name": "@boshen_c"
+        }
+      ],
+      "attachments": [
+        {
+          "url": "https://pbs.twimg.com/card_img/2003758795500199936/1j8X-Hg_?format=jpg&name=800x419"
+        }
+      ]
+    },
+    {
+      "id": "a08baeb3270cebd7bc3d614aecb63557",
+      "url": "https://x.com/cityjsconf/status/2001133594815648205",
+      "title": "RT by @youyuxi: CityJS Conference is back in #Singapore! Join 20 speakers including @youyuxi, @coderkungfu free workshops, free meetups, and a full day exploring the latest trends in JavaScript and AI. Learn, connect, and level up your skills. Get your tickets now!",
+      "content_text": "CityJS Conference is back in #Singapore! Join 20 speakers including @youyuxi, @coderkungfu free workshops, free meetups, and a full day exploring the latest trends in JavaScript and AI. Learn, connect, and level up your skills. \n\nGet your tickets now!https://t.co/faaVtt4rtS pic.twitter.com/xllxuLUDoN— CityJS Conferences (@cityjsconf) December 17, 2025\n",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">CityJS Conference is back in <a href=\"https://twitter.com/hashtag/Singapore?src=hash&ref_src=twsrc%5Etfw\">#Singapore</a>! Join 20 speakers including <a href=\"https://twitter.com/youyuxi?ref_src=twsrc%5Etfw\">@youyuxi</a>, <a href=\"https://twitter.com/coderkungfu?ref_src=twsrc%5Etfw\">@coderkungfu</a> free workshops, free meetups, and a full day exploring the latest trends in JavaScript and AI. Learn, connect, and level up your skills. <br><br>Get your tickets now!<a href=\"https://t.co/faaVtt4rtS\">https://t.co/faaVtt4rtS</a> <a href=\"https://t.co/xllxuLUDoN\">pic.twitter.com/xllxuLUDoN</a></p>— CityJS Conferences (@cityjsconf) <a href=\"https://twitter.com/cityjsconf/status/2001133594815648205?ref_src=twsrc%5Etfw\">December 17, 2025</a></blockquote>\n<script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "image": "https://pbs.twimg.com/ext_tw_video_thumb/2001133559327682560/pu/img/ofXHZ07ZUBHRoIO0.jpg",
+      "date_published": "2025-12-17T03:33:00.000Z",
+      "authors": [
+        {
+          "name": "@cityjsconf"
+        }
+      ],
+      "attachments": [
+        {
+          "url": "https://pbs.twimg.com/ext_tw_video_thumb/2001133559327682560/pu/img/ofXHZ07ZUBHRoIO0.jpg"
+        }
+      ]
+    },
+    {
+      "id": "6a4b449867495e531f6d51b4b8b827c8",
+      "url": "https://x.com/serkodev/status/2000974800085508112",
+      "title": "RT by @youyuxi: In the next update of @vuejs language tools, we're shipping a brand-new Rich Hover Message feature ✨ Hover any Vue component to see beautifully formatted Props & Slots, all auto-generated. Built to bring your DX to the next level 🚀 More details coming soon, stay tuned! 👀",
+      "content_text": "In the next update of @vuejs language tools, we're shipping a brand-new Rich Hover Message feature ✨\nHover any Vue component to see beautifully formatted Props & Slots, all auto-generated.\nBuilt to bring your DX to the next level 🚀 More details coming soon, stay tuned! 👀 pic.twitter.com/JnbmfhLr51— SerKo (@serkodev) December 16, 2025\n",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">In the next update of <a href=\"https://twitter.com/vuejs?ref_src=twsrc%5Etfw\">@vuejs</a> language tools, we're shipping a brand-new Rich Hover Message feature ✨<br>Hover any Vue component to see beautifully formatted Props & Slots, all auto-generated.<br>Built to bring your DX to the next level 🚀 More details coming soon, stay tuned! 👀 <a href=\"https://t.co/JnbmfhLr51\">pic.twitter.com/JnbmfhLr51</a></p>— SerKo (@serkodev) <a href=\"https://twitter.com/serkodev/status/2000974800085508112?ref_src=twsrc%5Etfw\">December 16, 2025</a></blockquote>\n<script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "image": "https://pbs.twimg.com/amplify_video_thumb/2000974502415753219/img/1n1NbNuOgqLw5SVj.jpg",
+      "date_published": "2025-12-16T17:02:00.000Z",
+      "authors": [
+        {
+          "name": "@serkodev"
+        }
+      ],
+      "attachments": [
+        {
+          "url": "https://pbs.twimg.com/amplify_video_thumb/2000974502415753219/img/1n1NbNuOgqLw5SVj.jpg"
+        }
+      ]
+    },
+    {
+      "id": "db8869f635624b70f822301f12883cec",
+      "url": "https://x.com/voidzerodev/status/2000959462538912162",
+      "title": "RT by @youyuxi: Yes, @rolldown_rs is supporting Rollup's plugin API which is also the base of @vite_js plugins. But did you know that Rolldown also aligns with certain features from esbuild natively? In turn, you can use `define` and `inject` without any extra plugins. Just define them via your…",
+      "content_text": "Yes, @rolldown_rs is supporting Rollup's plugin API which is also the base of @vite_js plugins. But did you know that Rolldown also aligns with certain features from esbuild natively?\n\nIn turn, you can use `define` and `inject` without any extra plugins. Just define them via your…— VoidZero (@voidzerodev) December 16, 2025\n",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">Yes, <a href=\"https://twitter.com/rolldown_rs?ref_src=twsrc%5Etfw\">@rolldown_rs</a> is supporting Rollup's plugin API which is also the base of <a href=\"https://twitter.com/vite_js?ref_src=twsrc%5Etfw\">@vite_js</a> plugins. But did you know that Rolldown also aligns with certain features from esbuild natively?<br><br>In turn, you can use `define` and `inject` without any extra plugins. Just define them via your…</p>— VoidZero (@voidzerodev) <a href=\"https://twitter.com/voidzerodev/status/2000959462538912162?ref_src=twsrc%5Etfw\">December 16, 2025</a></blockquote>\n<script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "image": "https://pbs.twimg.com/card_img/2001745710799294464/3OAZqlEX?format=png&name=800x419",
+      "date_published": "2025-12-16T16:01:00.000Z",
+      "authors": [
+        {
+          "name": "@voidzerodev"
+        }
+      ],
+      "attachments": [
+        {
+          "url": "https://pbs.twimg.com/card_img/2001745710799294464/3OAZqlEX?format=png&name=800x419"
+        }
+      ]
+    },
+    {
+      "id": "bd538e246896dcf45ea368bf798b1785",
+      "url": "https://x.com/Cameron_C2/status/2000540121586647082",
+      "title": "RT by @youyuxi: Oxlint v1.33.0 & oxfmt v0.18.0 are out! 🚀 → 14 new rules! → RuleTester enhancements for custom plugins → lots of formatter CLI! → package.json sorting → `quoteProps` support → 11 perf improvements! → 10 formatter & 16 linter fixes! → more doc improvements!",
+      "content_text": "Oxlint v1.33.0 & oxfmt v0.18.0 are out! 🚀\n\n→ 14 new rules!\n→ RuleTester enhancements for custom plugins\n→ lots of formatter CLI!\n→ package.json sorting\n→ `quoteProps` support\n→ 11 perf improvements!\n→ 10 formatter & 16 linter fixes!\n→ more doc improvements!— Cam (@Cameron_C2) December 15, 2025\n",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">Oxlint v1.33.0 & oxfmt v0.18.0 are out! 🚀<br><br>→ 14 new rules!<br>→ RuleTester enhancements for custom plugins<br>→ lots of formatter CLI!<br>→ package.json sorting<br>→ `quoteProps` support<br>→ 11 perf improvements!<br>→ 10 formatter & 16 linter fixes!<br>→ more doc improvements!</p>— Cam (@Cameron_C2) <a href=\"https://twitter.com/Cameron_C2/status/2000540121586647082?ref_src=twsrc%5Etfw\">December 15, 2025</a></blockquote>\n<script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "date_published": "2025-12-15T12:15:00.000Z",
+      "authors": [
+        {
+          "name": "@Cameron_C2"
+        }
+      ]
+    },
+    {
+      "id": "c45b52001ec2faf4365b8fa29da57be5",
+      "url": "https://x.com/youyuxi/status/2000369778113024046",
+      "title": "This is cool:  Bundlephopia but powered by Rolldown and  and runs entirely in your browser! by @ssssotaro",
+      "content_text": "This is cool:\n\n rolldphobia.ssssota.dev/\n\nBundlephopia but powered by Rolldown and  esm.sh and runs entirely in your browser!\n\nby  @ssssotaro— Evan You (@youyuxi) Dec 15, 2025",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">This is cool:<br><br> <a href=\"https://rolldphobia.ssssota.dev/\">rolldphobia.ssssota.dev/</a><br><br>Bundlephopia but powered by Rolldown and  <a href=\"http://esm.sh\">esm.sh</a> and runs entirely in your browser!<br><br>by  <a href=\"https://x.com/ssssotaro\">@ssssotaro</a></p>— Evan You (@youyuxi) <a href=\"https://twitter.com/youyuxi/status/2000369778113024046\">Dec 15, 2025</a></blockquote><script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "date_published": "2025-12-15T00:58:00.000Z",
+      "authors": [
+        {
+          "name": "@youyuxi"
+        }
+      ]
+    },
+    {
+      "id": "6ffbfa0b1ce6879a225b45486ad0024e",
+      "url": "https://x.com/Cameron_C2/status/1999829905635201112",
+      "title": "RT by @youyuxi: Want to write your own JS plugin for oxlint? Here's how! 🚀 pic.",
+      "content_text": "Want to write your own JS plugin for oxlint? Here's how! 🚀 pic.twitter.com/6O484VTfCG— Cam (@Cameron_C2) December 13, 2025\n",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">Want to write your own JS plugin for oxlint? Here's how! 🚀 <a href=\"https://t.co/6O484VTfCG\">pic.twitter.com/6O484VTfCG</a></p>— Cam (@Cameron_C2) <a href=\"https://twitter.com/Cameron_C2/status/1999829905635201112?ref_src=twsrc%5Etfw\">December 13, 2025</a></blockquote>\n<script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "image": "https://pbs.twimg.com/media/G8DR1BcW0AQIQ3i.jpg",
+      "date_published": "2025-12-13T13:12:00.000Z",
+      "authors": [
+        {
+          "name": "@Cameron_C2"
+        }
+      ],
+      "attachments": [
+        {
+          "url": "https://pbs.twimg.com/media/G8DR1BcW0AQIQ3i.jpg"
+        }
+      ]
+    },
+    {
+      "id": "409b9369a172cfb9c620554cd2e532f3",
+      "url": "https://x.com/TheAlexLichter/status/1999590719623741714",
+      "title": "RT by @youyuxi: I had to show that feature in action and tell something about Hook Filters. The best is that it works framework-agnostic and gives great indicators without being a profiling pro. It already helped improving perf in @nuxt_js. More to come. Video up now on my YouTube channel 👀",
+      "content_text": "I had to show that feature in action and tell something about Hook Filters. The best is that it works framework-agnostic and gives great indicators without being a profiling pro.\n\nIt already helped improving perf in @nuxt_js. More to come.\n\nVideo up now on my YouTube channel 👀 https://t.co/3ELWQA5kow pic.twitter.com/yg6uOmttZp— Alexander Lichter (@TheAlexLichter) December 12, 2025\n",
+      "content_html": "<blockquote class=\"twitter-tweet\" data-width=\"550\"><p lang=\"en\" dir=\"ltr\">I had to show that feature in action and tell something about Hook Filters. The best is that it works framework-agnostic and gives great indicators without being a profiling pro.<br><br>It already helped improving perf in <a href=\"https://twitter.com/nuxt_js?ref_src=twsrc%5Etfw\">@nuxt_js</a>. More to come.<br><br>Video up now on my YouTube channel 👀 <a href=\"https://t.co/3ELWQA5kow\">https://t.co/3ELWQA5kow</a> <a href=\"https://t.co/yg6uOmttZp\">pic.twitter.com/yg6uOmttZp</a></p>— Alexander Lichter (@TheAlexLichter) <a href=\"https://twitter.com/TheAlexLichter/status/1999590719623741714?ref_src=twsrc%5Etfw\">December 12, 2025</a></blockquote>\n<script async=\"\" src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>",
+      "image": "https://pbs.twimg.com/media/G7_48bcXAAQk0PD.jpg?name=small&format=webp",
+      "date_published": "2025-12-12T21:22:00.000Z",
+      "authors": [
+        {
+          "name": "@TheAlexLichter"
+        }
+      ],
+      "attachments": [
+        {
+          "url": "https://pbs.twimg.com/media/G7_48bcXAAQk0PD.jpg?name=small&format=webp"
+        }
+      ]
+    }
+  ]
+}

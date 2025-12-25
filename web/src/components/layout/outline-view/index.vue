@@ -28,7 +28,11 @@ const selectItem = (id: string) => {
 };
 
 const getDisplayTitle = (item: TweetItem) => {
-  return item.title || "无标题";
+  // If translation is disabled and item is translated, show original text
+  if (!store.auto_translate_chinese && item.is_translated) {
+    return item.originText || item.content || "无标题";
+  }
+  return item.content || "无标题";
 };
 
 // Auto-scroll to active item in Outline

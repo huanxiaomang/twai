@@ -1,0 +1,29 @@
+{
+  "name": "@twai/fetch-tweet",
+  "version": "0.0.1",
+  "description": "Fetch tweet content",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "dev": "unbuild --stub",
+    "run-fetch": "pnpm build && node dist/index.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "unbuild": "^2.0.0"
+  },
+  "dependencies": {
+    "fflate": "^0.8.2"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "前端圈",
+  "feed_id": "web",
+  "feed_url": "https://github.com/huanxiaomang/twai-feeds/tree/main/twai-feeds/web",
+  "avatar": "https://raw.githubusercontent.com/huanxiaomang/twai-feeds/refs/heads/main/twai-feeds/web/icon.png",
+  "version": "12",
+  "rss_urls": ["https://rss.app/feeds/v1.1/2HUK9fQrGRTCTwGi.json"],
+  "batch_size": 20,
+  "max_concurrent": 5,
+  "ai_bots": [
+    {
+      "bot_id": "diverge",
+      "name": "发散",
+      "avatar": "https://raw.githubusercontent.com/huanxiaomang/twai-feeds/refs/heads/main/twai-feeds/web/bot1.jpg",
+      "description": "我会帮你解析推文并发散思考，提出相关关键词或问题",
+      "prompt": "你是一个资历丰富的程序员，有着资深的知识底蕴，很多新技术对你来说并不陌生，可以给你一个推文后，提出相关的关键词，发散相关问题，引导用户思考，做出一些点评等等。注意你的目标不是解析推文，而是发散思考。一定要直接输出内容，不要废话，字数在100-200字左右。"
+    },
+    {
+      "bot_id": "parser",
+      "name": "推文解析",
+      "avatar": "https://raw.githubusercontent.com/huanxiaomang/twai-feeds/refs/heads/main/twai-feeds/web/bot2.jpg",
+      "description": "如果是技术类推文，我会自动帮你解析内容",
+      "prompt": "看不懂贴文，解释一下，要通俗易懂一些，可以灵活使用对应超链接以及输出代码给我。一定要直接输出内容，不要废话。"
+    }
+  ]
+}

@@ -83,8 +83,31 @@ const activeBots = computed(() => {
       <div
         v-if="activeBots.length > 0"
         :key="store.curr_tweet_id || 'none'"
-        class="flex-1 overflow-y-auto p-6 space-y-8 scroll-smooth"
+        class="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth"
       >
+        <!-- Hint Text -->
+        <div
+          class="flex items-center gap-2 px-4 py-3 bg-muted/20 border border-border/30 rounded-lg"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="size-4 text-muted-foreground"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <p class="text-xs text-muted-foreground">
+            以下内容由 AI Bot 根据当前推文生成
+          </p>
+        </div>
+
         <div v-for="bot in activeBots" :key="bot.bot_id" class="space-y-4">
           <!-- Bot Header with Tooltip -->
           <div class="flex items-center gap-3">
@@ -135,15 +158,10 @@ const activeBots = computed(() => {
           </div>
 
           <!-- Content Card -->
-          <div class="relative group">
-            <div
-              class="absolute -inset-0.5 bg-linear-to-r from-primary/5 to-blue-500/5 rounded-2xl blur opacity-0 group-hover:opacity-100 transition duration-500"
-            ></div>
-            <div
-              class="relative bg-muted/30 backdrop-blur-sm rounded-xl border border-border/50 shadow-sm overflow-hidden"
-            >
+          <div class="relative">
+            <div class="overflow-hidden">
               <div
-                class="markdown-body p-6"
+                class="markdown-body p-2 font-normal"
                 v-html="renderedContents[bot.bot_id]"
               ></div>
             </div>

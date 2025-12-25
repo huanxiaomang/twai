@@ -1,0 +1,75 @@
+name: Daily Feed Fetch
+
+on:
+  schedule:
+    - cron: "0 19 * * *" # 3:00 AM CST (UTC+8) is 19:00 UTC previous day
+  workflow_dispatch:
+
+jobs:
+  fetch-and-process:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build fetch-tweet package
+        run: |
+          cd packages/fetch-tweet
+          pnpm build
+
+      - name: Discover and Process Feeds
+        env:
+          AI_ENDPOINT: ${{ secrets.AI_ENDPOINT }}
+          AI_API_KEY: ${{ secrets.AI_API_KEY }}
+          AI_MODEL: ${{ secrets.AI_MODEL }}
+        run: |
+          # Discover all feed directories
+          for feed_dir in twai-feeds/*/; do
+            if [ -d "$feed_dir" ]; then
+              feed_id=$(basename "$feed_dir")
+              config_path="${feed_dir}config.json"
+
+              if [ -f "$config_path" ]; then
+                echo "========================================="
+                echo "Processing feed: $feed_id"
+                echo "Config: $config_path"
+                echo "Output: $feed_dir"
+                echo "========================================="
+
+                # Set environment variables for this feed
+                export FEED_CONFIG_PATH="$config_path"
+                export OUTPUT_DIR="$feed_dir"
+
+                # Run the fetch script
+                node packages/fetch-tweet/dist/index.mjs
+
+                echo "Completed processing feed: $feed_id"
+                echo ""
+              else
+                echo "Warning: Config not found for feed $feed_id at $config_path"
+              fi
+            fi
+          done
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add twai-feeds/*/config.json twai-feeds/*/FEED_CONTENT twai-feeds/*/FEED_AI_BOT twai-feeds/*/FEED_AI_OVERVIEW_*
+          git commit -m "chore: update feed content [skip ci]" || echo "No changes to commit"
+          git push
