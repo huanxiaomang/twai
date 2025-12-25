@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user";
+import { fetchFeedInfo } from "../../services/mock";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,26 +11,51 @@ import {
   FieldSeparator,
   FieldSet,
 } from "@/components/ui/field";
-import { Plus, Trash2, User, Cpu, Rss } from "lucide-vue-next";
+import {
+  Plus,
+  Trash2,
+  User,
+  Cpu,
+  Rss,
+  Download,
+  Upload,
+  Database,
+  Loader2,
+} from "lucide-vue-next";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
 
 const store = useUserStore();
 
 const newFeedUrl = ref("");
+const isVerifying = ref(false);
 
-const addFeed = () => {
-  if (!newFeedUrl.value) return;
+const addFeed = async () => {
+  const url = newFeedUrl.value.trim();
+  if (!url) return;
 
-  if (store.subscribe_feed_url.includes(newFeedUrl.value)) {
+  if (store.subscribe_feed_url.includes(url)) {
     toast.error("该订阅源已存在");
     return;
   }
 
-  store.addFeedUrl(newFeedUrl.value);
-  newFeedUrl.value = "";
-  store.fetchAllFeedsInfo();
-  toast.success("订阅源添加成功");
+  isVerifying.value = true;
+  try {
+    const feedInfo = await fetchFeedInfo(url);
+    if (!feedInfo || !feedInfo.feed_id) {
+      toast.error("无效的订阅源链接");
+      return;
+    }
+
+    store.addFeedUrl(url);
+    newFeedUrl.value = "";
+    store.fetchAllFeedsInfo();
+    toast.success("订阅源添加成功");
+  } catch (e) {
+    toast.error("验证订阅源失败，请检查链接");
+  } finally {
+    isVerifying.value = false;
+  }
 };
 
 const removeFeed = (index: number) => {
@@ -46,6 +72,55 @@ const removeFeed = (index: number) => {
       },
     },
   });
+};
+
+const downloadJson = (filename: string, data: any) => {
+  const blob = new Blob([JSON.stringify(data, null, 2)], {
+    type: "application/json",
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};
+
+const exportData = () => {
+  const data = {
+    user: store.user,
+    ai_config: store.ai_config,
+    subscribe_feed_url: store.subscribe_feed_url,
+    starred_items: store.starred_items,
+  };
+  downloadJson("twai-data.json", data);
+  toast.success("配置与收藏导出成功");
+};
+
+const handleImport = () => {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".json";
+  input.onchange = (e: any) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event: any) => {
+      const content = event.target.result;
+      const success = store.importConfig(content);
+
+      if (success) {
+        toast.success("导入成功");
+      } else {
+        toast.error("导入失败，请检查文件格式");
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
 };
 
 // Automatic saving for all state changes
@@ -71,7 +146,7 @@ store.$subscribe(
 
       <form @submit.prevent class="space-y-12">
         <FieldGroup>
-          <FieldSet>
+          <!-- <FieldSet>
             <div class="flex items-center gap-1.5">
               <User class="w-4 h-4 text-muted-foreground" />
               <span class="text-lg font-bold tracking-tight flex items-center"
@@ -106,11 +181,11 @@ store.$subscribe(
                 <FieldDescription> 仅支持直接图片链接。 </FieldDescription>
               </Field>
             </FieldGroup>
-          </FieldSet>
+          </FieldSet> -->
 
-          <FieldSeparator />
+          <!-- <FieldSeparator /> -->
 
-          <FieldSet>
+          <!-- <FieldSet>
             <div class="flex items-center gap-1.5">
               <Cpu class="w-4 h-4 text-muted-foreground" />
               <span class="text-lg font-bold tracking-tight">AI配置</span>
@@ -145,9 +220,9 @@ store.$subscribe(
                 </FieldDescription>
               </Field>
             </FieldGroup>
-          </FieldSet>
+          </FieldSet> -->
 
-          <FieldSeparator />
+          <!-- <FieldSeparator /> -->
 
           <FieldSet>
             <div class="flex items-center gap-1.5">
@@ -169,15 +244,21 @@ store.$subscribe(
                   v-model="newFeedUrl"
                   placeholder="输入订阅源链接..."
                   @keyup.enter="addFeed"
+                  :disabled="isVerifying"
                 />
                 <Button
                   @click="addFeed"
                   variant="secondary"
                   size="sm"
                   class="shrink-0"
+                  :disabled="isVerifying"
                 >
-                  <Plus class="w-4 h-4 mr-1" />
-                  添加
+                  <Loader2
+                    v-if="isVerifying"
+                    class="w-4 h-4 mr-1 animate-spin"
+                  />
+                  <Plus v-else class="w-4 h-4 mr-1" />
+                  {{ isVerifying ? "验证中..." : "添加" }}
                 </Button>
               </div>
 
@@ -206,6 +287,45 @@ store.$subscribe(
                   </p>
                 </div>
               </div>
+            </FieldGroup>
+          </FieldSet>
+
+          <FieldSeparator />
+
+          <FieldSet>
+            <div class="flex items-center gap-1.5">
+              <Database class="w-4 h-4 text-muted-foreground" />
+              <span class="text-lg font-bold tracking-tight">数据管理</span>
+            </div>
+            <FieldGroup class="mt-1 space-y-4">
+              <div class="grid grid-cols-1 gap-4">
+                <div class="space-y-2">
+                  <p class="text-sm font-medium">配置与收藏信息</p>
+                  <div class="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      class="flex-1"
+                      @click="exportData"
+                    >
+                      <Download class="w-3.5 h-3.5 mr-1.5" />
+                      导出数据
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      class="flex-1"
+                      @click="handleImport"
+                    >
+                      <Upload class="w-3.5 h-3.5 mr-1.5" />
+                      导入数据
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              <p class="text-[11px] text-muted-foreground">
+                导入操作将覆盖当前本地存储的所有配置和收藏数据，请谨慎操作。
+              </p>
             </FieldGroup>
           </FieldSet>
         </FieldGroup>

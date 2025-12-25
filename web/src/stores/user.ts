@@ -2,22 +2,24 @@ import { defineStore } from 'pinia';
 import type {
     UserState,
     UserConfig,
-    UserStarredItem,
     Feed,
-    FeedItemContent,
+    TweetItem,
     FeedResponse,
     FeedAIResponse,
     DateRange,
     UserInfo,
-    UserAIConfig
+    UserAIConfig,
+    TagInfo,
+    Tweets
 } from '@/types';
+import { parseISO, isWithinInterval, subDays, isSameDay } from "date-fns";
 import { storage } from '../../services/ls';
 import { fetchFeedInfo, fetchFeedItem, fetchFeedsAIItem } from '../../services/mock';
 import { logger } from '../../services/logger';
+import { toast } from 'vue-sonner';
 
 const STATE_KEY = 'twai_user_state';
 const CONFIG_KEY = 'twai_user_config';
-const STARRED_KEY = 'twai_user_starred';
 
 const initialConfig: UserConfig = {
     user: {
@@ -31,6 +33,8 @@ const initialConfig: UserConfig = {
         api_key: "",
     },
     subscribe_feed_url: [],
+    starred_items: {},
+    show_video_download_prompt: true,
 };
 
 const initialState: UserState = {
@@ -39,10 +43,10 @@ const initialState: UserState = {
     curr_tags: [],
     date_range: "all",
     ai_panel_width: 25,
-};
-
-const initialStarred: UserStarredItem = {
-    starred_items: [],
+    outline_panel_width: 20,
+    is_outline_visible: true,
+    is_ai_panel_visible: true,
+    scroll_offset: 10,
 };
 
 const CacheKeyFactory = {
@@ -53,10 +57,8 @@ const CacheKeyFactory = {
 
 export const useUserStore = defineStore('user', {
     state: () => {
-        // ... existing state initialization ...
         const savedState = storage.get<UserState>(STATE_KEY);
         const savedConfig = storage.get<UserConfig>(CONFIG_KEY);
-        const savedStarred = storage.get<UserStarredItem>(STARRED_KEY);
 
         return {
             // UserState
@@ -65,23 +67,104 @@ export const useUserStore = defineStore('user', {
             curr_tags: savedState?.curr_tags ?? initialState.curr_tags,
             date_range: savedState?.date_range ?? initialState.date_range,
             ai_panel_width: savedState?.ai_panel_width ?? initialState.ai_panel_width,
+            outline_panel_width: savedState?.outline_panel_width ?? initialState.outline_panel_width,
+            is_outline_visible: savedState?.is_outline_visible ?? initialState.is_outline_visible,
+            is_ai_panel_visible: savedState?.is_ai_panel_visible ?? initialState.is_ai_panel_visible,
+            scroll_offset: savedState?.scroll_offset ?? initialState.scroll_offset,
 
             // UserConfig
             user: savedConfig?.user ?? initialConfig.user,
             ai_config: savedConfig?.ai_config ?? initialConfig.ai_config,
             subscribe_feed_url: savedConfig?.subscribe_feed_url ?? initialConfig.subscribe_feed_url,
-
-            // UserStarredItem
-            starred_items: savedStarred?.starred_items ?? initialStarred.starred_items,
+            starred_items: savedConfig?.starred_items ?? initialConfig.starred_items,
+            show_video_download_prompt: savedConfig?.show_video_download_prompt ?? initialConfig.show_video_download_prompt,
 
             // Runtime State (Not persisted)
             feeds: [] as Feed[],
-            feedItems: [] as FeedItemContent[],
+            feedItems: [] as TweetItem[],
+            tagsInfo: [] as TagInfo[],
             feedAIAnalysis: {} as Record<string, string>,
             feedItemAIBotsContent: {} as Record<string, Record<string, string>>,
             isLoadingFeeds: false,
             isLoadingContent: false,
+            isInternalScrolling: false,
         };
+    },
+    getters: {
+        groupedFilteredItems(state): Tweets[] {
+            if (state.curr_tags.length === 0) {
+                return [];
+            }
+
+            // 1. First, get all items and filter them
+            let list = [...state.feedItems];
+
+            // Date Range Filter
+            const range = state.date_range;
+            if (range === "starred") {
+                const feedId = state.curr_feed?.feed_id;
+                list = list.filter((item) => {
+                    return feedId && state.starred_items[feedId]?.includes(item.tw_id);
+                });
+            } else if (range === "last_day") {
+                const now = new Date();
+                const yesterday = subDays(now, 1);
+                list = list.filter((item) => {
+                    const date = parseISO(item.date_published);
+                    return isWithinInterval(date, { start: yesterday, end: now });
+                });
+            } else if (range === "last_week") {
+                const now = new Date();
+                const lastWeek = subDays(now, 7);
+                list = list.filter((item) => {
+                    const date = parseISO(item.date_published);
+                    return isWithinInterval(date, { start: lastWeek, end: now });
+                });
+            } else if (range !== "all" && range) {
+                try {
+                    const targetDate = parseISO(range);
+                    list = list.filter((item) => {
+                        const itemDate = parseISO(item.date_published);
+                        return isSameDay(itemDate, targetDate);
+                    });
+                } catch (e) {
+                    console.error("Failed to filter by date:", range);
+                }
+            }
+
+            // Tags Filter
+            if (state.curr_tags.length > 0) {
+                list = list.filter((item) => {
+                    if (!item.tags) return false;
+                    return item.tags.some((tag) => state.curr_tags.includes(tag));
+                });
+            }
+
+            // Sort by date (newest first)
+            list.sort((a, b) => new Date(b.date_published).getTime() - new Date(a.date_published).getTime());
+
+            // 2. Group by author_id
+            const groups: Tweets[] = [];
+            const groupMap = new Map<string, Tweets>();
+
+            list.forEach(item => {
+                const authorId = item.author.author_id;
+                if (!groupMap.has(authorId)) {
+                    const newGroup: Tweets = {
+                        author: item.author,
+                        tweets: []
+                    };
+                    groupMap.set(authorId, newGroup);
+                    groups.push(newGroup);
+                }
+                groupMap.get(authorId)!.tweets.push(item);
+            });
+
+            return groups;
+        },
+        filteredFeedItems(): TweetItem[] {
+            return this.groupedFilteredItems.flatMap(group => group.tweets);
+        }
     },
     actions: {
         async fetchAllFeedsInfo() {
@@ -98,6 +181,7 @@ export const useUserStore = defineStore('user', {
 
         async fetchFeedFullData(feedUrl: string) {
             this.isLoadingContent = true;
+            const startTime = Date.now();
             try {
                 // 1. Get latest version info
                 await this.fetchAllFeedsInfo();
@@ -135,14 +219,28 @@ export const useUserStore = defineStore('user', {
                 ]);
 
                 // 4. Update State
-                this.feedItems = dataRes.list;
-                if (dataRes.feed) this.curr_feed = dataRes.feed;
+                this.feedItems = dataRes.list.flatMap(group => group.tweets);
+
+                this.tagsInfo = dataRes.tags_info ?? [];
+                if (dataRes.feed) {
+                    this.curr_feed = dataRes.feed;
+                    // Ensure favicon_map exists and merge favicons from the grouped list
+                    if (!this.curr_feed.favicon_map) this.curr_feed.favicon_map = {};
+                    dataRes.list.forEach(group => {
+                        this.curr_feed!.favicon_map![group.author.author_name] = group.author.author_favicon;
+                    });
+                }
                 this.feedAIAnalysis = aiRes.feed_ai_analysis;
                 this.feedItemAIBotsContent = aiRes.feed_item_ai_bots_content ?? {};
 
             } catch (error) {
                 logger.error('获取订阅源详情失败', error, { showToast: true });
             } finally {
+                const elapsed = Date.now() - startTime;
+                const minDelay = 300;
+                if (elapsed < minDelay) {
+                    await new Promise(resolve => setTimeout(resolve, minDelay - elapsed));
+                }
                 this.isLoadingContent = false;
             }
         },
@@ -168,6 +266,50 @@ export const useUserStore = defineStore('user', {
             this.ai_panel_width = width;
             this.saveState();
         },
+        setOutlinePanelWidth(width: number) {
+            this.outline_panel_width = width;
+            this.saveState();
+        },
+        toggleOutline() {
+            this.is_outline_visible = !this.is_outline_visible;
+            this.saveState();
+        },
+        toggleAIPanel() {
+            this.is_ai_panel_visible = !this.is_ai_panel_visible;
+            this.saveState();
+        },
+        setInternalScrolling(val: boolean) {
+            this.isInternalScrolling = val;
+        },
+        setScrollOffset(val: number) {
+            this.scroll_offset = val;
+            this.saveState();
+        },
+        jumpToTweet(id: string) {
+            const exists = this.filteredFeedItems.some(item => item.tw_id === id);
+            if (!exists) {
+                toast.error("未在当前筛选结果中找到该推文");
+                return;
+            }
+
+            this.setInternalScrolling(true);
+            this.setCurrTweetId(id);
+            const el = document.getElementById(`post-${id}`);
+            const container = document.querySelector(
+                ".h-full.bg-background.overflow-y-auto"
+            );
+            if (el && container) {
+                const targetScrollTop = el.offsetTop - this.scroll_offset;
+                container.scrollTo({ top: targetScrollTop, behavior: "smooth" });
+            }
+            setTimeout(() => {
+                this.setInternalScrolling(false);
+            }, 1000);
+        },
+        setVideoDownloadPrompt(val: boolean) {
+            this.show_video_download_prompt = val;
+            this.saveConfig();
+        },
 
         // UserConfig Actions
         updateUser(user: Partial<UserInfo>) {
@@ -190,14 +332,38 @@ export const useUserStore = defineStore('user', {
         },
 
         // UserStarredItem Actions
-        toggleStarred(item: FeedItemContent) {
-            const index = this.starred_items.findIndex(i => i.tw_id === item.tw_id);
-            if (index > -1) {
-                this.starred_items.splice(index, 1);
-            } else {
-                this.starred_items.push({ ...item });
+        toggleStarred(item: TweetItem) {
+            const feedId = this.curr_feed?.feed_id;
+            if (!feedId) return;
+            if (!this.starred_items[feedId]) {
+                this.starred_items[feedId] = [];
             }
-            this.saveStarred();
+            const index = this.starred_items[feedId].indexOf(item.tw_id);
+            if (index > -1) {
+                this.starred_items[feedId].splice(index, 1);
+            } else {
+                this.starred_items[feedId].push(item.tw_id);
+            }
+            this.saveConfig();
+        },
+
+        // Data Management
+        importConfig(json: string) {
+            try {
+                const config = JSON.parse(json) as UserConfig;
+                if (config.user && config.ai_config && Array.isArray(config.subscribe_feed_url)) {
+                    this.user = config.user;
+                    this.ai_config = config.ai_config;
+                    this.subscribe_feed_url = config.subscribe_feed_url;
+                    this.starred_items = config.starred_items || {};
+                    this.saveConfig();
+                    this.fetchAllFeedsInfo();
+                    return true;
+                }
+            } catch (e) {
+                logger.error('导入配置失败', e);
+            }
+            return false;
         },
 
         // Persistence
@@ -208,6 +374,10 @@ export const useUserStore = defineStore('user', {
                 curr_tags: this.curr_tags,
                 date_range: this.date_range,
                 ai_panel_width: this.ai_panel_width,
+                outline_panel_width: this.outline_panel_width,
+                is_outline_visible: this.is_outline_visible,
+                is_ai_panel_visible: this.is_ai_panel_visible,
+                scroll_offset: this.scroll_offset,
             };
             storage.set(STATE_KEY, state, true);
         },
@@ -216,19 +386,14 @@ export const useUserStore = defineStore('user', {
                 user: this.user,
                 ai_config: this.ai_config,
                 subscribe_feed_url: this.subscribe_feed_url,
+                starred_items: this.starred_items,
+                show_video_download_prompt: this.show_video_download_prompt,
             };
             storage.set(CONFIG_KEY, config, true);
-        },
-        saveStarred() {
-            const starred: UserStarredItem = {
-                starred_items: this.starred_items,
-            };
-            storage.set(STARRED_KEY, starred, true);
         },
         saveAll() {
             this.saveState();
             this.saveConfig();
-            this.saveStarred();
         }
     }
 });

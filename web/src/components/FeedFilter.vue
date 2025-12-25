@@ -46,24 +46,28 @@ useResizeObserver(containerRef, () => {
 
 const activeMode = ref<"tabs" | "picker">("tabs");
 
-const tags = [
-  { id: "tech", label: "技术", count: 5 },
-  { id: "leisure", label: "休闲", count: 200 },
-  { id: "food", label: "美食", count: 0 },
-];
+const tags = computed(() =>
+  store.tagsInfo.map((t) => ({
+    id: t.tag_id,
+    label: t.tag_name,
+    count: t.tag_count,
+  }))
+);
 
 const selectedTags = computed({
   get: () => store.curr_tags,
   set: (val) => store.setCurrTags(val),
 });
 
-const isAllSelected = computed(() => selectedTags.value.length === tags.length);
+const isAllSelected = computed(
+  () => tags.value.length > 0 && selectedTags.value.length === tags.value.length
+);
 
 const toggleAll = () => {
   if (isAllSelected.value) {
     selectedTags.value = [];
   } else {
-    selectedTags.value = tags.map((t) => t.id);
+    selectedTags.value = tags.value.map((t) => t.id);
   }
 };
 
@@ -143,24 +147,35 @@ const handleDateChange = (val: DateValue | undefined) => {
             class="h-8 mb-[-4px]"
           >
             <TabsList class="h-7 p-0.5 bg-muted/50">
-              <TabsTrigger value="all" class="h-6 px-3 text-filter"
+              <TabsTrigger
+                value="all"
+                class="h-6 px-3 text-filter data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none"
                 >全部</TabsTrigger
               >
-              <TabsTrigger value="starred" class="h-6 px-3 text-filter">
+              <TabsTrigger
+                value="starred"
+                class="h-6 px-3 text-filter data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none"
+              >
                 收藏
               </TabsTrigger>
-              <TabsTrigger value="last_day" class="h-6 px-3 text-filter">
+              <TabsTrigger
+                value="last_day"
+                class="h-6 px-3 text-filter data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none"
+              >
                 最近一天
                 <span class="text-blue-500 text-[12px] font-bold ml-[-2px]"
                   >AI</span
                 >
               </TabsTrigger>
-              <TabsTrigger value="last_week" class="h-6 px-3 text-filter">
+              <!-- <TabsTrigger
+                value="last_week"
+                class="h-6 px-3 text-filter data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none"
+              >
                 最近一周
                 <span class="text-blue-500 text-[12px] font-bold ml-[-2px]"
                   >AI</span
                 >
-              </TabsTrigger>
+              </TabsTrigger> -->
             </TabsList>
           </Tabs>
         </div>
@@ -170,7 +185,7 @@ const handleDateChange = (val: DateValue | undefined) => {
           :class="
             cn(
               'transition-opacity duration-200 hover:opacity-100',
-              activeMode === 'picker' ? 'opacity-100' : 'opacity-60'
+              activeMode === 'picker' ? 'opacity-100' : 'opacity-30'
             )
           "
         >

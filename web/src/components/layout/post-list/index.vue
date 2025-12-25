@@ -1,84 +1,90 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 import { useUserStore } from "@/stores/user";
-import { parseISO, isWithinInterval, subDays, isSameDay } from "date-fns";
+import PostCard from "./PostCard.vue";
+import { useActiveScroll } from "vue-use-active-scroll";
 
 const store = useUserStore();
+const containerRef = ref<HTMLElement | null>(null);
 
-const filteredList = computed(() => {
-  let list = store.feedItems;
+const targets = computed(() =>
+  store.filteredFeedItems.map((item) => `post-${item.tw_id}`)
+);
 
-  // 1. Date Range Filter
-  const range = store.date_range;
-  if (range === "starred") {
-    // For starred, we might want to show all starred items across all feeds,
-    // or just starred items from the current feed.
-    // Usually "starred" as a filter in a feed view means "show starred items from this feed".
-    list = list.filter((item) =>
-      store.starred_items.some((s) => s.tw_id === item.tw_id)
-    );
-  } else if (range === "last_day") {
-    const now = new Date();
-    const yesterday = subDays(now, 1);
-    list = list.filter((item) => {
-      const date = parseISO(item.date_published);
-      return isWithinInterval(date, { start: yesterday, end: now });
-    });
-  } else if (range === "last_week") {
-    const now = new Date();
-    const lastWeek = subDays(now, 7);
-    list = list.filter((item) => {
-      const date = parseISO(item.date_published);
-      return isWithinInterval(date, { start: lastWeek, end: now });
-    });
-  } else if (range !== "all" && range) {
-    // Specific date string (e.g. "2025-12-22")
-    try {
-      const targetDate = parseISO(range);
-      list = list.filter((item) => {
-        const itemDate = parseISO(item.date_published);
-        return isSameDay(itemDate, targetDate);
-      });
-    } catch (e) {
-      console.error("Failed to filter by date:", range);
+const { activeId } = useActiveScroll(targets, {
+  root: containerRef,
+  boundaryOffset: {
+    toTop: store.scroll_offset,
+    toBottom: store.scroll_offset,
+  },
+});
+
+watch(activeId, (newId) => {
+  if (newId) {
+    const twId = newId.replace("post-", "");
+    if (store.curr_tweet_id !== twId) {
+      store.setCurrTweetId(twId);
     }
   }
-
-  // 2. Tags Filter
-  if (store.curr_tags.length > 0) {
-    list = list.filter((item) => {
-      if (!item.tags) return false;
-      return item.tags.some((tag) => store.curr_tags.includes(tag));
-    });
-  }
-
-  return list;
 });
+
+// Handle filtering sync: if current item is filtered out, select the first available one
+watch(
+  () => store.filteredFeedItems,
+  (newList) => {
+    if (newList.length > 0) {
+      const exists = newList.some((item) => item.tw_id === store.curr_tweet_id);
+      if (!exists) {
+        const firstId = newList[0]?.tw_id;
+        if (firstId) {
+          store.setCurrTweetId(firstId);
+          // Scroll to top when filter changes and current item is gone
+          setTimeout(() => {
+            if (containerRef.value) {
+              containerRef.value.scrollTop = 0;
+            }
+          }, 50);
+        }
+      }
+    } else {
+      store.setCurrTweetId(null);
+    }
+  }
+);
 </script>
 
 <template>
-  <div class="flex-1 overflow-y-auto p-4 space-y-2">
+  <div
+    ref="containerRef"
+    class="h-full bg-background overflow-y-auto scroll-smooth"
+  >
     <div
-      v-if="store.isLoadingContent"
-      class="text-sm text-muted-foreground animate-pulse"
+      v-if="store.filteredFeedItems.length === 0"
+      class="flex h-full w-full flex-col items-center justify-center py-20 text-center animate-in fade-in duration-500"
     >
-      加载中...
+      <img
+        src="/none.png"
+        alt="No results"
+        class="h-36 object-contain opacity-50 grayscale"
+      />
+      <p class="mt-4 text-sm text-muted-foreground italic">
+        {{
+          store.curr_tags.length === 0
+            ? "没有选择标签呢"
+            : store.date_range === "starred"
+            ? "暂无收藏内容呢"
+            : "什么都没有筛选到呢"
+        }}
+      </p>
     </div>
-    <div
-      v-else-if="filteredList.length === 0"
-      class="text-sm text-muted-foreground italic"
-    >
-      没有匹配的内容
-    </div>
-    <div
-      v-for="item in filteredList"
-      :key="item.tw_id"
-      class="p-2 border rounded hover:bg-muted/50 transition-colors"
-    >
-      <span class="text-xs font-mono">{{ item.tw_id }}</span>
-      <div v-if="item.title" class="text-sm font-medium mt-1">
-        {{ item.title }}
-      </div>
+
+    <div v-else class="max-w-3xl mx-auto divide-y divide-border/40 pb-20">
+      <PostCard
+        v-for="item in store.filteredFeedItems"
+        :key="item.tw_id"
+        :item="item"
+        :is-selected="store.curr_tweet_id === item.tw_id"
+      />
     </div>
   </div>
 </template>

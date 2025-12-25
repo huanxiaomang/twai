@@ -3,6 +3,7 @@ export interface Feed {
     feed_id: string;
     feed_url: string;
     avatar: string;
+    favicon_map?: Record<string, string>;
     ai_bots?: AIBotItem[];
     version: string;
 }
@@ -12,26 +13,40 @@ export interface FeedAIResponse {
     feed_item_ai_bots_content?: Record<string, Record<string, string>>; // tw_id -> bot_id -> content
 }
 
+export interface MediaItem {
+    url: string;              // 媒体资源的缩略图 URL（RSS 中提供的）
+    type: 'image' | 'video';  // 单个媒体项 of type: image or video
+}
+
+export interface TweetItem {
+    tw_id: string;                  // 原始推文的 ID
+    author: Author;
+    authors: {
+        name: string;
+    }[];                            // 如果是转发贴，里面的第一项的name就是被转发的原帖的作者id
+    url: string;                    // 推文完整链接
+    title: string;                  // 推文标题
+    content: string;                // 提取后的纯正文文本（保留换行，无签名、无 RT 前缀）
+    originText: string;             // 如果被翻译，翻译前的原文
+    date_published: string;         // ISO 格式发布时间
+    media: MediaItem[];             // 媒体信息，支持精确区分图片/视频及混排
+    is_rt: boolean;                 // 是否为转发帖
+    original_id?: string;           // 可选：如果是带评论的转发，可记录原帖 ID
+    is_translated?: boolean;        // 是否已翻译，翻译文本覆盖content
+    tags?: string[];                // 自动提取的标签数组
+}
+
+export interface Tweets {
+    author: Author;
+    tweets: TweetItem[];
+};
+
 export interface FeedResponse {
     feed: Feed;
-    list: FeedItemContent[];
+    list: Tweets[];
     tags_info?: TagInfo[];
     feed_ai_analysis: Record<string, string>; // Overview, summary, etc.
     feed_item_ai_bots_content?: Record<string, Record<string, string>>; // tw_id -> bot_id -> content
-}
-
-export interface FeedItemContent {
-    tw_id: string;
-    url: string;
-    title?: string;
-    content_text?: string;
-    image?: string;
-    date_published: string;
-    authors?: Author[];
-    attachments?: Attachment[];
-    tags?: string[];
-    is_translated: boolean;
-    rawText?: string;
 }
 
 export interface TagInfo {
@@ -41,9 +56,9 @@ export interface TagInfo {
 }
 
 export interface Author {
-    name: string;
-    url?: string;
-    avatar?: string;
+    author_id: string;
+    author_name: string;
+    author_favicon: string;
 }
 
 export interface Attachment {
@@ -66,16 +81,18 @@ export interface UserState {
     curr_tags: string[];
     date_range: DateRange;
     ai_panel_width: number;
+    outline_panel_width: number;
+    is_outline_visible: boolean;
+    is_ai_panel_visible: boolean;
+    scroll_offset: number;
 }
 
 export interface UserConfig {
     user: UserInfo;
     ai_config: UserAIConfig;
     subscribe_feed_url: string[];
-}
-
-export interface UserStarredItem {
-    starred_items: FeedItemContent[];
+    starred_items: Record<string, string[]>; // feed_id -> tw_id
+    show_video_download_prompt: boolean;
 }
 
 export type DateRange = "all" | "starred" | "last_day" | "last_week" | (string & {});

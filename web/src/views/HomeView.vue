@@ -9,7 +9,7 @@ const store = useUserStore();
   >
     <div class="relative mb-6">
       <img
-        src="/none.png"
+        src="/home.png"
         alt="No selection"
         class="h-48 w-48 object-contain opacity-90"
       />
