@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import ImagePreviewer from '@/components/ui/ImagePreviewer.vue';
 import type { TweetItem } from "@/types";
 import { useUserStore } from "@/stores/user";
 import { format, parseISO, isToday, isYesterday, isSameYear } from "date-fns";
@@ -167,6 +168,16 @@ const confirmDownload = () => {
   showPrompt.value = false;
   executeVideoDownload(pendingVideoUrl.value);
 };
+
+// 图片预览器逻辑
+const previewVisible = ref(false);
+const previewIndex = ref(0);
+const previewImages = computed(() => (props.item.media?.filter(m => m.type === 'image').map(m => m.url) || []));
+function openPreview(idx:number) {
+  previewIndex.value = idx;
+  previewVisible.value = true;
+}
+
 </script>
 
 <template>
@@ -342,8 +353,16 @@ const confirmDownload = () => {
         >
           <img
             :src="m.url"
-            class="w-full h-full object-cover max-h-[512px]"
+            class="w-full h-full object-cover max-h-[1024px] cursor-zoom-in"
             loading="lazy"
+            v-if="m.type === 'image'"
+            @click="openPreview(previewImages.findIndex(u => u === m.url))"
+          />
+          <img
+            :src="m.url"
+            class="w-full h-full object-cover max-h-[1024px]"
+            loading="lazy"
+            v-else
           />
           <div
             v-if="m.type === 'video'"
@@ -384,6 +403,13 @@ const confirmDownload = () => {
       </div>
     </div>
   </div>
+
+  <ImagePreviewer
+    :urls="previewImages"
+    v-model="previewVisible"
+    :start-index="previewIndex"
+    v-if="previewImages.length"
+  />
 
   <!-- Video Download Prompt Dialog -->
   <div
