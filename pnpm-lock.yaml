@@ -8,15 +8,6 @@ importers:
 
   .: {}
 
-  packages/api:
-    devDependencies:
-      typescript:
-        specifier: ^5.3.3
-        version: 5.9.3
-      unbuild:
-        specifier: ^2.0.0
-        version: 2.0.0(typescript@5.9.3)
-
   packages/fetch-tweet:
     dependencies:
       fflate:
@@ -69,8 +60,8 @@ importers:
         specifier: ^1.9.17
         version: 1.9.17(vue@3.5.26(typescript@5.9.3))
       reka-ui:
-        specifier: ^2.6.1
-        version: 2.6.1(typescript@5.9.3)(vue@3.5.26(typescript@5.9.3))
+        specifier: ^2.7.0
+        version: 2.7.0(typescript@5.9.3)(vue@3.5.26(typescript@5.9.3))
       shiki:
         specifier: ^3.20.0
         version: 3.20.0
@@ -1952,8 +1943,8 @@ packages:
   regex@6.1.0:
     resolution: {integrity: sha512-6VwtthbV4o/7+OaAF9I5L5V3llLEsoPyq9P1JVXkedTP33c7MfCG0/5NOPcSJn0TzXcG9YUrR0gQSWioew3LDg==}
 
-  reka-ui@2.6.1:
-    resolution: {integrity: sha512-XK7cJDQoNuGXfCNzBBo/81Yg/OgjPwvbabnlzXG2VsdSgNsT6iIkuPBPr+C0Shs+3bb0x0lbPvgQAhMSCKm5Ww==}
+  reka-ui@2.7.0:
+    resolution: {integrity: sha512-m+XmxQN2xtFzBP3OAdIafKq7C8OETo2fqfxcIIxYmNN2Ch3r5oAf6yEYCIJg5tL/yJU2mHqF70dCCekUkrAnXA==}
     peerDependencies:
       vue: '>= 3.2.0'
 
@@ -3901,7 +3892,7 @@ snapshots:
     dependencies:
       regex-utilities: 2.3.0
 
-  reka-ui@2.6.1(typescript@5.9.3)(vue@3.5.26(typescript@5.9.3)):
+  reka-ui@2.7.0(typescript@5.9.3)(vue@3.5.26(typescript@5.9.3)):
     dependencies:
       '@floating-ui/dom': 1.7.4
       '@floating-ui/vue': 1.1.9(vue@3.5.26(typescript@5.9.3))
