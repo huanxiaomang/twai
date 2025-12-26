@@ -43,15 +43,28 @@ function base64ToUint8(base64: string): Uint8Array {
  */
 export async function fetchJson<T>(url: string): Promise<T> {
     const response = await fetch(url);
+
     if (!response.ok) {
         throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
     }
 
-    const text = await response.text();
+    const buffer = await response.arrayBuffer();
+    const uint8 = new Uint8Array(buffer);
 
-    // Check for compression prefix 'c:'
-    if (text.startsWith('c:')) {
-        try {
+    let jsonText: string;
+
+    try {
+        const decompressed = await new Promise<Uint8Array>((resolve, reject) => {
+            unzlib(uint8, (err, data) => {
+                if (err) reject(err);
+                else resolve(data);
+            });
+        });
+        jsonText = strFromU8(decompressed);
+    } catch (e) {
+        const text = new TextDecoder().decode(uint8);
+
+        if (text.startsWith('c:')) {
             const compressed = base64ToUint8(text.slice(2));
             const decompressed = await new Promise<Uint8Array>((resolve, reject) => {
                 unzlib(compressed, (err, data) => {
@@ -59,17 +72,11 @@ export async function fetchJson<T>(url: string): Promise<T> {
                     else resolve(data);
                 });
             });
-            return JSON.parse(strFromU8(decompressed)) as T;
-        } catch (e) {
-            console.error('Failed to decompress fetched JSON:', e);
-            throw new Error('Failed to decompress fetched JSON');
+            jsonText = strFromU8(decompressed);
+        } else {
+            jsonText = text;
         }
     }
 
-    try {
-        return JSON.parse(text) as T;
-    } catch (e) {
-        console.error('Failed to parse fetched JSON:', e);
-        throw new Error('Failed to parse fetched JSON');
-    }
+    return JSON.parse(jsonText) as T;
 }

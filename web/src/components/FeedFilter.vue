@@ -162,7 +162,7 @@ const handleDateChange = (val: DateValue | undefined) => {
                 value="last_day"
                 class="h-6 px-3 text-filter data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none"
               >
-                最近一天
+                昨天
                 <span class="text-blue-500 text-[12px] font-bold ml-[-2px]"
                   >AI</span
                 >

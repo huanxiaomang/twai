@@ -74,8 +74,8 @@ export class AIClient {
             await this.callAIStream(options);
         } catch (error: any) {
             if (retries > 0 && error.message.includes('429')) {
-                console.warn(`[429 Too Many Requests] Quota exhausted. Waiting 30s before retrying... (Retries left: ${retries})`);
-                await new Promise(resolve => setTimeout(resolve, 30000));
+                console.warn(`[429 Too Many Requests] Quota exhausted. Waiting 60s before retrying... (Retries left: ${retries})`);
+                await new Promise(resolve => setTimeout(resolve, 60000));
                 return this.callAIStreamWithRetry(options, retries - 1);
             }
             throw error;

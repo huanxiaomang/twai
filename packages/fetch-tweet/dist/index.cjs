@@ -616,92 +616,84 @@ if (process.argv[1] === (typeof document === 'undefined' ? require('u' + 'rl').p
   (async () => {
     try {
       const configPath = process.env.FEED_CONFIG_PATH || process.argv[2];
+      const resolvedConfigPath = path__default.resolve(process.cwd(), configPath);
       let options;
-      if (configPath) {
-        console.log(`Loading config from: ${configPath}`);
-        const configFile = await fs__default$1.readFile(path__default.resolve(process.cwd(), configPath), "utf-8");
-        const config = JSON.parse(configFile);
-        options = {
-          rss_urls: config.rss_urls,
-          feed_info: {
-            name: config.name,
-            feed_id: config.feed_id,
-            feed_url: config.feed_url,
-            avatar: config.avatar,
-            version: config.version
-          },
-          ai_bots: config.ai_bots,
-          model: process.env.AI_MODEL || config.model || "Gemini-3-Flash/AI Studio",
-          end_point: process.env.AI_ENDPOINT || config.end_point || "https://api.meow61.my/v1/chat/completions",
-          apikey: process.env.AI_API_KEY || config.apikey || "",
-          batch_size: config.batch_size || 20,
-          max_concurrent: config.max_concurrent || 5
-        };
-      } else {
-        console.log("No config path provided, using mock options for testing.");
-        options = {
-          rss_urls: ["https://rss.app/feeds/v1.1/KfTb9CIgQDdxIs7L.json", "https://rss.app/feeds/v1.1/2HUK9fQrGRTCTwGi.json"],
-          feed_info: {
-            name: "\u524D\u7AEF\u5708",
-            feed_id: "web",
-            feed_url: "https://github.com/huanxiaomang/twai-feeds/tree/main/twai-feeds/web",
-            avatar: "https://vuejs.org/images/logo.png",
-            version: "8"
-          },
-          ai_bots: [
-            {
-              "bot_id": "diverge",
-              "name": "\u53D1\u6563",
-              "avatar": "https://raw.githubusercontent.com/huanxiaomang/twai-feeds/refs/heads/main/twai-feeds/web/bot1.jpg",
-              "description": "\u5339\u914D\u6280\u672F\u7C7B\u63A8\u6587\uFF0C\uFF08\u4E00\u4E9B\u95F2\u804A\u7C7B\u578B\u7684\u63A8\u6587\u4E0D\u7B97\uFF09\u6211\u4F1A\u5E2E\u4F60\u89E3\u6790\u63A8\u6587\u5E76\u53D1\u6563\u601D\u8003\uFF0C\u63D0\u51FA\u76F8\u5173\u5173\u952E\u8BCD\u6216\u95EE\u9898",
-              "prompt": "\u4F60\u662F\u4E00\u4E2A\u8D44\u5386\u4E30\u5BCC\u7684\u7A0B\u5E8F\u5458\uFF0C\u6709\u7740\u8D44\u6DF1\u7684\u77E5\u8BC6\u5E95\u8574\uFF0C\u5F88\u591A\u65B0\u6280\u672F\u5BF9\u4F60\u6765\u8BF4\u5E76\u4E0D\u964C\u751F\uFF0C\u53EF\u4EE5\u7ED9\u4F60\u4E00\u4E2A\u63A8\u6587\u540E\uFF0C\u63D0\u51FA\u76F8\u5173\u7684\u5173\u952E\u8BCD\uFF0C\u53D1\u6563\u76F8\u5173\u95EE\u9898\uFF0C\u5F15\u5BFC\u7528\u6237\u601D\u8003\uFF0C\u505A\u51FA\u4E00\u4E9B\u70B9\u8BC4\u7B49\u7B49\u3002\u6CE8\u610F\u4F60\u7684\u76EE\u6807\u4E0D\u662F\u89E3\u6790\u63A8\u6587\uFF0C\u800C\u662F\u53D1\u6563\u601D\u8003\u3002\u4E00\u5B9A\u8981\u76F4\u63A5\u8F93\u51FA\u5185\u5BB9\uFF0C\u4E0D\u8981\u5E9F\u8BDD\uFF0C\u5B57\u6570\u5728100-200\u5B57\u5DE6\u53F3\u3002markdown\u683C\u5F0F\u3002"
-            },
-            {
-              "bot_id": "parser",
-              "name": "\u63A8\u6587\u89E3\u6790",
-              "avatar": "https://raw.githubusercontent.com/huanxiaomang/twai-feeds/refs/heads/main/twai-feeds/web/bot2.jpg",
-              "description": "\u5339\u914D\u6280\u672F\u7C7B\u63A8\u6587\uFF0C\uFF08\u4E00\u4E9B\u95F2\u804A\u7C7B\u578B\u7684\u63A8\u6587\u4E0D\u7B97\uFF09\u6211\u4F1A\u81EA\u52A8\u5E2E\u4F60\u89E3\u6790\u5185\u5BB9",
-              "prompt": "\u6211\u61C2\u524D\u7AEF\u57FA\u7840\u77E5\u8BC6\uFF0C\u4F46\u662F\u5B8C\u5168\u4E0D\u61C2\u63A8\u7279\u4E0A\u8FD9\u4E9B\u65B0\u4E1C\u897F\uFF0C\u4EE5\u53CA\u4ED6\u4EEC\u90FD\u5728\u8BF4\u4E9B\u4EC0\u4E48\uFF0C\u9875\u4E0D\u61C2\u4ED6\u4EEC\u4E3A\u4EC0\u4E48\u8981\u8FD9\u4E48\u5E72\u3002\u770B\u4E0D\u61C2\u63A8\u6587\uFF0C\u5E2E\u6211\u89E3\u91CA\u4E00\u4E0B\uFF0C\u8981\u901A\u4FD7\u6613\u61C2\u4E00\u4E9B\uFF0C\u8F93\u51FA\u89E3\u6790\u548C\u76F8\u5173\u4EE3\u7801\uFF08\u5982\u679C\u9700\u8981\uFF09\u7ED9\u6211\u3002\u81F3\u5C11100\u5B57\u3002\u4E00\u5B9A\u8981\u76F4\u63A5\u8F93\u51FA\u5185\u5BB9\uFF0C\u4E0D\u8981\u5E9F\u8BDD\u3002markdown\u683C\u5F0F\u3002"
-            }
-          ],
-          model: "Gemini-3-Flash/AI Studio",
-          end_point: "https://api.meow61.my/v1/chat/completions",
-          apikey: "wPtC3VjCWhZnsc49YoTzAfYzyecpDQwGyFJ0RngqP4t7qxwj",
-          batch_size: 20,
-          max_concurrent: 5
-        };
+      console.log(`Loading config from: ${configPath}`);
+      const configFile = await fs__default$1.readFile(resolvedConfigPath, "utf-8");
+      const config = JSON.parse(configFile);
+      const currentVersion = parseInt(config.version, 10) || 0;
+      const newVersion = (currentVersion + 1).toString();
+      config.version = newVersion;
+      console.log(`Version updated: ${currentVersion} -> ${newVersion}`);
+      await fs__default$1.writeFile(resolvedConfigPath, JSON.stringify(config, null, 2), "utf-8");
+      console.log(`Config updated at: ${resolvedConfigPath}`);
+      if (!process.env.AI_MODEL) {
+        console.log("AI_MODEL is not set");
       }
+      if (!process.env.AI_ENDPOINT) {
+        console.log("AI_ENDPOINT is not set");
+      }
+      if (!process.env.AI_API_KEY) {
+        console.log("AI_API_KEY is not set");
+      }
+      options = {
+        rss_urls: config.rss_urls,
+        feed_info: {
+          name: config.name,
+          feed_id: config.feed_id,
+          feed_url: config.feed_url,
+          avatar: config.avatar,
+          version: newVersion
+          // Use the new version
+        },
+        ai_bots: config.ai_bots,
+        model: process.env.AI_MODEL,
+        end_point: process.env.AI_ENDPOINT,
+        apikey: process.env.AI_API_KEY,
+        batch_size: config.batch_size || 20,
+        max_concurrent: config.max_concurrent || 5
+      };
       const res = await fetchAndFormat(options);
       const [feed, feed_item_ai_bots_content] = res;
       const outputDir = process.env.OUTPUT_DIR ? path__default.resolve(process.cwd(), process.env.OUTPUT_DIR) : path__default.resolve(process.cwd(), "cache");
       await fs__default$1.mkdir(outputDir, { recursive: true });
-      const jsonStr = JSON.stringify(feed);
-      const compressed = await new Promise((resolve, reject) => {
-        fflate.zlib(fflate.strToU8(jsonStr), { level: 9 }, (err, data) => {
-          if (err)
-            reject(err);
-          else
-            resolve(data);
+      const compressData = (data) => {
+        return new Promise((resolve, reject) => {
+          fflate.zlib(fflate.strToU8(data), { level: 9 }, (err, compressed) => {
+            if (err)
+              reject(err);
+            else
+              resolve(compressed);
+          });
         });
-      });
+      };
       const feedContentPath = path__default.join(outputDir, "FEED_CONTENT");
-      await fs__default$1.writeFile(feedContentPath, compressed);
+      const feedCompressed = await compressData(JSON.stringify(feed));
+      await fs__default$1.writeFile(feedContentPath, feedCompressed);
       console.log(`Saved compressed feed to: ${feedContentPath}`);
       if (feed_item_ai_bots_content) {
         const botsContentPath = path__default.join(outputDir, "FEED_AI_BOT");
-        await fs__default$1.writeFile(botsContentPath, JSON.stringify(feed_item_ai_bots_content, null, 2));
-        console.log(`Saved AI bots content to: ${botsContentPath}`);
+        const botsCompressed = await compressData(JSON.stringify(feed_item_ai_bots_content, null, 2));
+        await fs__default$1.writeFile(botsContentPath, botsCompressed);
+        console.log(`Saved compressed AI bots content to: ${botsContentPath}`);
       }
       if (feed.list && feed.list.length > 0) {
-        const overviewDay = process.env.OVERVIEW_DAY || (/* @__PURE__ */ new Date()).toISOString().split("T")[0];
+        const today = /* @__PURE__ */ new Date();
+        const yesterday = new Date(Date.UTC(
+          today.getUTCFullYear(),
+          today.getUTCMonth(),
+          today.getUTCDate() - 1
+        ));
+        const overviewDay = process.env.OVERVIEW_DAY || yesterday.toISOString().split("T")[0];
         const overviewOptions = { ...options, overview_day: overviewDay };
         console.log(`Generating overview for day: ${overviewDay}`);
         const overviewResult = await generateOverview(feed.list, overviewOptions);
         if (overviewResult.overview) {
           const overviewFilename = `FEED_AI_OVERVIEW_${overviewDay.replace(/-/g, "_")}`;
           const overviewPath = path__default.join(outputDir, overviewFilename);
-          await fs__default$1.writeFile(overviewPath, JSON.stringify(overviewResult.overview, null, 2));
-          console.log(`Saved overview to: ${overviewPath}`);
+          const overviewCompressed = await compressData(JSON.stringify(overviewResult.overview, null, 2));
+          await fs__default$1.writeFile(overviewPath, overviewCompressed);
+          console.log(`Saved compressed overview to: ${overviewPath}`);
         }
       }
     } catch (error) {

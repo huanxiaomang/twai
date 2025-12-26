@@ -258,6 +258,22 @@ const confirmDownload = () => {
             </Tooltip>
           </TooltipProvider>
 
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <Button
+                variant="ghost"
+                size="icon"
+                class="h-8 w-8 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+                @click="openTwitter"
+              >
+                <ExternalLink class="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>在 Twitter 查看</p>
+            </TooltipContent>
+          </Tooltip>
+
           <DropdownMenu>
             <DropdownMenuTrigger as-child>
               <Button

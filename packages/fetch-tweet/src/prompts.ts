@@ -1,51 +1,123 @@
 /**
- * AI Prompts for tweet processing
+ * AI Prompts for tweet processing – 优化版：清晰、结构化、严格控制输出格式
  */
 
-export const TRANSLATION_PROMPT = (itemsJson: string) => `给你一系列推文，你来将各种不是中文的语言内容翻译为中文，输出以下指定格式，不要输出任何其他内容！并且只翻译需要翻译的推文item即可，如果本身是中文不需要翻译，就不需要返还给我。只返回需要翻译的item翻译后的特定结构数组就好。针对技术类，保留英文的关键词。格式：<Tranalate>{"data":[{
-    "tw_id":"原先对应的推文id",
-    "translated_content":"翻译后的内容"
-},{
-    "tw_id":"原先对应的推文id",
-    "translated_content":"翻译后的内容"
-}]}</Tranalate>。帖子内容：${itemsJson}`;
+export const TRANSLATION_PROMPT = (itemsJson: string) => `
+你是一个专业的翻译助手，只负责将非中文推文翻译成自然流畅的中文（技术类保留英文关键词）。
 
-export const TAGS_GENERATION_PROMPT = (contentJson: string) => `给你一系列推文内容数组，你来推断他们可以进行划分的tag都有什么，我后面会根据这几个tag给每个推文打上标签。输出格式：<TagsInfo>{"data": [
-    { "tag_id": "xxx", "tag_name": "xxx" },
-    { "tag_id": "xxx", "tag_name": "xxx" }
-]}</TagsInfo>。推文内容：${contentJson}`;
+输入是一个 JSON 数组，每项包含 tw_id 和 content。
+只返回需要翻译的项（已经是中文的直接跳过，不出现在输出中）。
 
-export const TAGS_ASSIGNMENT_PROMPT = (itemsJson: string, tagsInfoJson: string) => `给你一系列推文（携带{tw_id:'xxx',content:'xxx'}[]，这里content截断到不大于50个字），和tag（携带tags_info），你来判断这些推文都含有哪些tag,一个推文可以有多个tag，但是至少有一个tag（如果推文内容无法分类，就使用"其他"）返回格式：<TagsData>{"data": [
-    { "tw_id": "xxx", "tags": ['tagid组成的数组条目1','tagid组成的数组条目2'] },
-     ...
-]}</TagsData>。推文数据：${itemsJson}，Tags信息：${tagsInfoJson}`;
+输出必须严格为以下格式，不能有多余文字、解释或代码块：
 
-export const AI_BOT_PROMPT = (botPrompt: string, tweetContent: string) => `${botPrompt}\n\n,以上prompt是一个叫做推文解析的aibot的功能，你要把这个功能应用于以下所有贴文，并且其中的description会写匹配哪种贴文，有些贴文不匹配就不需要生成，也不用加入返回的数组内。返回给我这个格式的数据（不匹配的话那个item就不用添加到数组内）：<AIBOT>{"data":[{
-                    "tw_id":"原先对应的推文id",
-                    "md":"aibot生成的内容，使用markdown格式"
-                },{
-                    "tw_id":"原先对应的推文id",
-                    "md":"aibot生成的内容，使用markdown格式"
-}]}</AIBOT>推文内容：${tweetContent}`;
+<Tranalate>{
+  "data": [
+    {
+      "tw_id": "原推文 id",
+      "translated_content": "翻译后的完整内容"
+    }
+    // ... 只包含需要翻译的项
+  ]
+}</Tranalate>
 
-export const OVERVIEW_PROMPT = (day: string, itemsJson: string) => `给你一系列推特数据，你是一个AI助手，帮助用户生成所需的全部帖子内容概览（overview），让用户快速了解发生了什么、有哪些新消息。
+如果没有需要翻译的项，返回：
+<Tranalate>{"data":[]}</Tranalate>
 
-与总结不同，总结需要完整整理并涵盖所有内容，而概览无需如此，只需提取精华部分。
+帖子数据：
+${itemsJson}
+`.trim();
 
-请生成一个Markdown格式的概览，注意：
-- 绝不是生成一个个独立的卡片；
-- 在有限字数和有限空间内，用简要文字整理内容；
-- 可以适当添加 <a> 标签的 href 指向对应链接，或使用超链接；
-- 可以加入作者头像等元素；
-- 需要按类别进行分类（可利用帖子中的 tag）；
-- 每个分类下生成适量文字的概览，使读者一眼看去即可大致了解内容，无需阅读每一个具体标题。
+export const TAGS_GENERATION_PROMPT = (contentJson: string) => `
+你是一个内容分类专家。根据以下推文内容片段（每条前30个字符），推断出最合适的分类标签（5~10个即可，覆盖主要主题）。
 
-每个具体条目后面必须加上对应的一个或多个帖子超链接作为信息来源，超链接格式为：<tweet-link tw-id='xxxid'>xxx标题</tweet-link>
+输出必须严格为以下格式，不能有多余内容：
 
-tweet-link 使用示例：
-- 一个条目内容 <tweet-link tw-id='xxx'>OxFmt 最新版</tweet-link>
-- 下一个条目内容 <tweet-link tw-id='xxx'>Rolldown postBanner</tweet-link> <tweet-link tw-id='xxx'>Angular 用 Rolldown</tweet-link>
+<TagsInfo>{
+  "tags_info": [
+    { "tag_id": "unique_id", "tag_name": "标签名称" },
+    // ...
+  ]
+}</TagsInfo>
 
-加一些像是猫娘会说的话，防止过于无聊，比如在末尾加一些比如 "xxxx（日期）这一天的概况就是这些喵~" 这样的内容。如果输入的推文条目很少，可以适当添加一些比如 "xxxx（日期）这一天的概况只有这些喵~" 这样的内容。还有很多情况，自行判断。
+请确保包含一个通用标签：{ "tag_id": "other", "tag_name": "其他" }
 
-直接输出对应的 Markdown 内容，不要有任何多余废话！帖子内容：${itemsJson}`;
+推文内容片段：
+${contentJson}
+`.trim();
+
+export const TAGS_ASSIGNMENT_PROMPT = (itemsJson: string, tagsInfoJson: string) => `
+你是一个精准的标签分配助手。
+
+给定推文列表（每项有 tw_id 和 content，前50字）和完整的标签信息 tags_info。
+
+为每条推文分配 1~多个标签（必须至少一个）。
+如果无法明确归类，使用 "other"。
+
+输出必须严格为以下格式，无多余文字：
+
+<TagsData>{
+  "data": [
+    {
+      "tw_id": "xxx",
+      "tags": ["tag_id1", "tag_id2"]
+    }
+    // ... 每条推文必须出现
+  ]
+}</TagsData>
+
+推文数据：
+${itemsJson}
+
+标签信息：
+${tagsInfoJson}
+`.trim();
+
+export const AI_BOT_PROMPT = (botPrompt: string, tweetContentJson: string) => `
+你现在是一个严格遵守规则的 AI Bot。
+
+你的核心功能与风格完全由以下描述决定：
+${botPrompt}
+
+请仔细阅读你的功能描述（特别是适用范围、匹配条件），只有当推文内容真正符合你的功能时，才为其生成内容。
+
+输入是多条推文的 JSON 数组，每条包含 tw_id 和 content。
+
+处理规则：
+- 不匹配 → 完全跳过，不输出任何内容
+- 匹配 → 生成一段符合你风格的 Markdown 内容（纯文本，不包代码块）
+
+输出必须严格为以下格式，不能有多余解释、文字或代码块：
+
+<AIBOT>{
+  "data": [
+    {
+      "tw_id": "对应的推文 id",
+      "md": "生成的 Markdown 内容"
+    }
+    // 只包含匹配的项
+  ]
+}</AIBOT>
+
+如果没有匹配项，返回：
+<AIBOT>{"data":[]}</AIBOT>
+
+开始处理推文：
+${tweetContentJson}
+`.trim();
+
+export const OVERVIEW_PROMPT = (day: string, itemsJson: string) => `
+你是一个活泼可爱的猫娘 AI 助手，帮助用户快速浏览 ${day} 这天的推特动态。
+
+任务：生成一份精炼的 Markdown 概览（不是逐条总结，而是按主题分类的整体精华）。
+
+要求：
+- 按主题/标签分类组织内容（可参考推文中的 tag）
+- 每类下用简洁文字概括核心信息
+- 在关键条目后添加来源超链接，格式：<tweet-link tw-id='xxx'>标题或简述</tweet-link>（支持多个并列）
+- 可以适当加入表情或猫娘口癖（如“喵~”、“nya~”），让内容更有趣
+- 如果当天内容很少，可以说“今天只有这些喵~”
+- 直接输出纯 Markdown 内容，不要任何前言、解释或代码块包裹
+
+帖子数据：
+${itemsJson}
+`.trim();

@@ -1,7 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import type { AIClient } from './ai-client';
-import { AI_BOT_PROMPT } from './prompts';
+import {
+    TRANSLATION_PROMPT,
+    TAGS_GENERATION_PROMPT,
+    TAGS_ASSIGNMENT_PROMPT,
+    AI_BOT_PROMPT,
+    OVERVIEW_PROMPT,
+} from './prompts';
 
 function appendLog(details: string) {
     const logFile = path.resolve(process.cwd(), 'ai_tasks.log');
@@ -10,11 +16,7 @@ function appendLog(details: string) {
 }
 
 /**
- * Batch process items with parallel requests
- * @param items - Array of items to process
- * @param batchSize - Number of items per batch
- * @param processor - Function to process each batch
- * @returns Combined results from all batches
+ * 通用批处理工具
  */
 export async function batchProcess<T, R>(
     items: T[],
@@ -22,8 +24,8 @@ export async function batchProcess<T, R>(
     processor: (batch: T[], batchIndex: number) => Promise<R[]>,
     options: { disableBatch?: boolean; maxConcurrent?: number } = {}
 ): Promise<R[]> {
-    if (options.disableBatch) {
-        console.log(`[Batch] Processing all ${items.length} items (Batching Disabled)`);
+    if (options.disableBatch || items.length <= batchSize) {
+        console.log(`[Batch] Processing all ${items.length} items (single batch)`);
         return processor(items, 0);
     }
 
@@ -52,12 +54,10 @@ export async function batchProcess<T, R>(
                 const batch = batches[index];
                 activeCount++;
 
-                console.log(`[Batch] Starting Batch ${index + 1}/${batches.length} (Items: ${batch.length}, Active Batches: ${activeCount})`);
+                console.log(`[Batch] Starting Batch ${index + 1}/${batches.length} (Items: ${batch.length}, Active: ${activeCount})`);
 
                 processor(batch, index)
-                    .then(res => {
-                        results[index] = res;
-                    })
+                    .then(res => { results[index] = res; })
                     .catch(err => {
                         console.error(`Batch ${index + 1} failed:`, err);
                         results[index] = [];
@@ -75,94 +75,81 @@ export async function batchProcess<T, R>(
 }
 
 /**
- * Process AI translation in batches
+ * 批量翻译
  */
 export async function batchTranslate(
     items: { tw_id: string; content: string }[],
     batchSize: number,
     aiClient: AIClient,
-    options: { endpoint: string; apiKey: string; model: string; prompt: (json: string) => string; disableBatch?: boolean; maxConcurrent?: number }
+    options: { endpoint: string; apiKey: string; model: string; disableBatch?: boolean; maxConcurrent?: number }
 ): Promise<{ tw_id: string; translated_content: string }[]> {
-    return batchProcess(items, batchSize, async (batch, batchIndex) => {
-        const prompt = options.prompt(JSON.stringify(batch));
-        let aiResponseText = '';
-        const startTime = Date.now();
+    return batchProcess(items, batchSize, async (batch) => {
+        const prompt = TRANSLATION_PROMPT(JSON.stringify(batch));
+        let responseText = '';
 
         try {
             await aiClient.stream({
                 endpoint: options.endpoint,
                 apiKey: options.apiKey,
                 model: options.model,
-                prompt: prompt,
-                onChunk: (chunk) => {
-                    aiResponseText += chunk;
-                }
+                prompt,
+                onChunk: (chunk) => { responseText += chunk; },
             });
 
-            const duration = Date.now() - startTime;
-            appendLog(`Task: Translation (Batch ${batchIndex + 1})\nDuration: ${duration}ms\nPrompt: ${prompt.slice(0, 2000)}...\nResult: ${aiResponseText.slice(0, 2000)}...`);
+            const match = responseText.match(/<Tranalate>([\s\S]*?)<\/Tranalate>/);
+            const jsonStr = match ? match[1].trim() : responseText.trim();
 
-            const match = aiResponseText.match(/<Tranalate>([\s\S]*?)<\/Tranalate>/);
-            if (match && match[1]) {
-                const translatedItems = JSON.parse(match[1])?.data ?? [];
-                return Array.isArray(translatedItems) ? translatedItems : [];
-            }
+            let parsed = { data: [] };
+            try { parsed = JSON.parse(jsonStr); } catch { }
+
+            return Array.isArray(parsed.data) ? parsed.data : [];
         } catch (e: any) {
-            const duration = Date.now() - startTime;
-            appendLog(`Task: Translation (Batch ${batchIndex + 1}) FAILED\nDuration: ${duration}ms\nError: ${e.message}\nPrompt: ${prompt.slice(0, 2000)}...`);
-            console.error('Batch translation failed:', e);
+            console.error('Translation batch failed:', e);
+            appendLog(`Translation batch FAILED\nError: ${e.message}\nPrompt: ${prompt.slice(0, 1000)}`);
+            return [];
         }
-
-        return [];
     }, { disableBatch: options.disableBatch, maxConcurrent: options.maxConcurrent });
 }
 
 /**
- * Process AI tag assignment in batches
+ * 批量打标签（分配）
  */
 export async function batchAssignTags(
     items: { tw_id: string; content: string }[],
     tagsInfo: { tag_id: string; tag_name: string }[],
     batchSize: number,
     aiClient: AIClient,
-    options: { endpoint: string; apiKey: string; model: string; prompt: (itemsJson: string, tagsJson: string) => string; disableBatch?: boolean; maxConcurrent?: number }
+    options: { endpoint: string; apiKey: string; model: string; disableBatch?: boolean; maxConcurrent?: number }
 ): Promise<{ tw_id: string; tags: string[] }[]> {
-    return batchProcess(items, batchSize, async (batch, batchIndex) => {
-        const prompt = options.prompt(JSON.stringify(batch), JSON.stringify(tagsInfo));
-        let aiResponseText = '';
-        const startTime = Date.now();
+    return batchProcess(items, batchSize, async (batch) => {
+        const prompt = TAGS_ASSIGNMENT_PROMPT(JSON.stringify(batch), JSON.stringify(tagsInfo));
+        let responseText = '';
 
         try {
             await aiClient.stream({
                 endpoint: options.endpoint,
                 apiKey: options.apiKey,
                 model: options.model,
-                prompt: prompt,
-                onChunk: (chunk) => {
-                    aiResponseText += chunk;
-                }
+                prompt,
+                onChunk: (chunk) => { responseText += chunk; },
             });
 
-            const duration = Date.now() - startTime;
-            appendLog(`Task: Tags Assignment (Batch ${batchIndex + 1})\nDuration: ${duration}ms\nPrompt: ${prompt.slice(0, 2000)}...\nResult: ${aiResponseText.slice(0, 2000)}...`);
+            const match = responseText.match(/<TagsData>([\s\S]*?)<\/TagsData>/);
+            const jsonStr = match ? match[1].trim() : responseText.trim();
 
-            const match = aiResponseText.match(/<TagsData>([\s\S]*?)<\/TagsData>/);
-            if (match && match[1]) {
-                const taggedItems = JSON.parse(match[1])?.data ?? [];
-                return Array.isArray(taggedItems) ? taggedItems : [];
-            }
+            let parsed = { data: [] };
+            try { parsed = JSON.parse(jsonStr); } catch { }
+
+            return Array.isArray(parsed.data) ? parsed.data : [];
         } catch (e: any) {
-            const duration = Date.now() - startTime;
-            appendLog(`Task: Tags Assignment (Batch ${batchIndex + 1}) FAILED\nDuration: ${duration}ms\nError: ${e.message}\nPrompt: ${prompt.slice(0, 2000)}...`);
-            console.error('Batch tag assignment failed:', e);
+            console.error('Tag assignment batch failed:', e);
+            return [];
         }
-
-        return [];
     }, { disableBatch: options.disableBatch, maxConcurrent: options.maxConcurrent });
 }
 
 /**
- * Process AI bot content generation in batches
+ * 批量生成 AI Bot 内容（每个 bot 独立处理所有 items）
  */
 export async function batchGenerateBotContent(
     items: { tw_id: string; content: string }[],
@@ -173,49 +160,44 @@ export async function batchGenerateBotContent(
 ): Promise<Record<string, Record<string, string>>> {
     const result: Record<string, Record<string, string>> = {};
 
-    // Process each bot separately
     for (const bot of bots) {
-        const botResults = await batchProcess(items, batchSize, async (batch, batchIndex) => {
-            // Process items in the batch concurrently (controlled by AIClient)
-            const promises = batch.map(async (item) => {
-                const prompt = AI_BOT_PROMPT(bot.prompt, item.content);
-                let aiResponseText = '';
-                const startTime = Date.now();
+        const botResults = await batchProcess(items, batchSize, async (batch) => {
+            const prompt = AI_BOT_PROMPT(bot.prompt, JSON.stringify(batch));
+            let responseText = '';
 
-                try {
-                    await aiClient.stream({
-                        endpoint: options.endpoint,
-                        apiKey: options.apiKey,
-                        model: options.model,
-                        prompt: prompt,
-                        onChunk: (chunk) => {
-                            aiResponseText += chunk;
-                        }
-                    });
+            try {
+                await aiClient.stream({
+                    endpoint: options.endpoint,
+                    apiKey: options.apiKey,
+                    model: options.model,
+                    prompt,
+                    onChunk: (chunk) => { responseText += chunk; },
+                });
 
-                    const duration = Date.now() - startTime;
-                    appendLog(`Task: Bot ${bot.bot_id} (Item ${item.tw_id})\nDuration: ${duration}ms\nPrompt: ${prompt.slice(0, 2000)}...\nResult: ${aiResponseText.slice(0, 2000)}...`);
+                const match = responseText.match(/<AIBOT>([\s\S]*?)<\/AIBOT>/);
+                const jsonStr = match ? match[1].trim() : responseText.trim();
 
-                    const match = aiResponseText.match(/<AIBOT>([\s\S]*?)<\/AIBOT>/);
-                    const content = match && match[1] ? match[1].trim() : aiResponseText.trim();
+                let parsed = { data: [] };
+                try { parsed = JSON.parse(jsonStr); } catch { }
 
-                    return { tw_id: item.tw_id, content };
-                } catch (e: any) {
-                    const duration = Date.now() - startTime;
-                    appendLog(`Task: Bot ${bot.bot_id} (Item ${item.tw_id}) FAILED\nDuration: ${duration}ms\nError: ${e.message}\nPrompt: ${prompt.slice(0, 2000)}...`);
-                    console.error(`Bot ${bot.bot_id} failed for ${item.tw_id}:`, e);
-                    return { tw_id: item.tw_id, content: '' };
-                }
-            });
+                const validItems = Array.isArray(parsed.data) ? parsed.data : [];
 
-            return Promise.all(promises);
+                return validItems.map((item: any) => ({
+                    tw_id: item.tw_id,
+                    content: typeof item.md === 'string' ? item.md.trim() : '',
+                }));
+            } catch (e: any) {
+                console.error(`Bot ${bot.bot_id} batch failed:`, e);
+                return [];
+            }
         }, { disableBatch: options.disableBatch, maxConcurrent: options.maxConcurrent });
 
-        // Merge bot results
-        for (const { tw_id, content } of botResults) {
-            if (!content) continue; // Skip failed items
-            if (!result[tw_id]) result[tw_id] = {};
-            result[tw_id][bot.bot_id] = content;
+        // 合并结果
+        for (const { tw_id, content } of botResults.flat()) {
+            if (content) {
+                if (!result[tw_id]) result[tw_id] = {};
+                result[tw_id][bot.bot_id] = content;
+            }
         }
     }
 

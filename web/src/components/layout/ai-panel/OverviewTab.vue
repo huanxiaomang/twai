@@ -4,7 +4,7 @@ import { useUserStore } from "@/stores/user";
 import { marked } from "marked";
 import { getHighlighter } from "@/lib/highlighter";
 import { useDark } from "@vueuse/core";
-import { format, parseISO } from "date-fns";
+import { format, subDays } from "date-fns";
 import type { Highlighter } from "shiki";
 
 const store = useUserStore();
@@ -25,10 +25,8 @@ const effectiveDate = computed(() => {
   }
   // If it's "last_day", get the date of the latest tweet
   if (range === "last_day") {
-    const latestTweet = store.filteredFeedItems[0];
-    if (latestTweet) {
-      return format(parseISO(latestTweet.date_published), "yyyy-MM-dd");
-    }
+    const yesterday = subDays(new Date(), 1);
+    return format(yesterday, "yyyy-MM-dd");
   }
   return null;
 });
