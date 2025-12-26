@@ -40,6 +40,9 @@ const toggleDark = useToggle(isDark);
 
 onMounted(() => {
   userStore.fetchAllFeedsInfo();
+  setTimeout(() => {
+    userStore.fetchAllFeedsInfo();
+  }, 1);
 });
 </script>
 
